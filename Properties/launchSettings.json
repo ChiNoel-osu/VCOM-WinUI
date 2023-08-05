@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "VCOM-WinUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "VCOM-WinUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

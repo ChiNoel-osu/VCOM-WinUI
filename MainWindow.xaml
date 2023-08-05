@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="VCOM_WinUI.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:loc="using:VCOM_WinUI.Localization"
+		xmlns:local="using:VCOM_WinUI"
+		xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		Title="VCOM-WinUI"
+		mc:Ignorable="d">
+	<Window.SystemBackdrop>
+		<DesktopAcrylicBackdrop />
+	</Window.SystemBackdrop>
+	<Grid>
+		<Rectangle Height="40"
+				   Width="40"
+				   Fill="Transparent"
+				   x:Name="TTB" />
+		<NavigationView x:Name="MainNavView"
+						OpenPaneLength="200"
+						PaneDisplayMode="Auto"
+						IsBackButtonVisible="Collapsed"
+						IsSettingsVisible="False"
+						ItemInvoked="MainNavView_ItemInvoked">
+			<NavigationView.Resources>
+				<Style TargetType="NavigationViewItem">
+					<Setter Property="Padding"
+							Value="0,0,0,2" />
+				</Style>
+			</NavigationView.Resources>
+			<NavigationView.MenuItems>
+				<NavigationViewItem Content="{x:Bind loc:Loc.MainCOM}"
+									Tag="VCOM_WinUI.View.MainCOMPage"
+									IsSelected="True">
+					<NavigationViewItem.Icon>
+						<FontIcon Glyph="&#xEF90;" />
+					</NavigationViewItem.Icon>
+				</NavigationViewItem>
+				<NavigationViewItem Content="{x:Bind loc:Loc.MultiCOM}"
+									Tag="VCOM_WinUI.View.MultiCOMPage">
+					<NavigationViewItem.Icon>
+						<FontIcon Glyph="&#xF003;" />
+					</NavigationViewItem.Icon>
+				</NavigationViewItem>
+				<NavigationViewItem Content="Suggest More!"
+									Icon="Emoji" />
+			</NavigationView.MenuItems>
+			<NavigationView.FooterMenuItems>
+				<NavigationViewItem Content="{x:Bind loc:Loc.Settings}"
+									Tag="VCOM_WinUI.View.SettingsPage"
+									Icon="Setting" />
+			</NavigationView.FooterMenuItems>
+			<Frame x:Name="ContentFrame" />
+		</NavigationView>
+	</Grid>
+</Window>

@@ -13,15 +13,15 @@
 		<DesktopAcrylicBackdrop />
 	</Window.SystemBackdrop>
 	<Grid>
-		<Rectangle Height="40"
-				   Width="40"
-				   Fill="Transparent"
-				   x:Name="TTB" />
+		<Grid x:Name="AppTitleBar" Margin="48,0,0,0"
+			  Height="40" />
 		<NavigationView x:Name="MainNavView"
 						OpenPaneLength="200"
 						PaneDisplayMode="Auto"
 						IsBackButtonVisible="Collapsed"
 						IsSettingsVisible="False"
+						ExpandedModeThresholdWidth="800"
+						CompactModeThresholdWidth="500"
 						ItemInvoked="MainNavView_ItemInvoked">
 			<NavigationView.Resources>
 				<Style TargetType="NavigationViewItem">

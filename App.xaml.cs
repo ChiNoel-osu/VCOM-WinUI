@@ -31,7 +31,7 @@ namespace VCOM_WinUI
 		protected override void OnLaunched(LaunchActivatedEventArgs args)
 		{
 			m_window = new MainWindow();
-			m_window.AppWindow.Resize(new Windows.Graphics.SizeInt32 { Height = 600, Width = 888 });
+			m_window.AppWindow.Resize(new Windows.Graphics.SizeInt32 { Width = 888, Height = 600 });
 			m_window.Activate();
 		}
 

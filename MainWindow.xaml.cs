@@ -14,8 +14,8 @@ namespace VCOM_WinUI
 		public MainWindow()
 		{
 			this.InitializeComponent();
-			ExtendsContentIntoTitleBar = true;
-			SetTitleBar(TTB);
+			ExtendsContentIntoTitleBar = true;  //Hide default title bar.
+			SetTitleBar(AppTitleBar);	//Set custom title bar.
 			MainNavView.DataContext = ViewModel.MainViewModel.Instance;
 			ContentFrame.Navigate(typeof(MainCOMPage));
 		}

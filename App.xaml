@@ -10,6 +10,19 @@
 				<!-- Other merged dictionaries here -->
 			</ResourceDictionary.MergedDictionaries>
 			<!-- Other app resources here -->
+			<SolidColorBrush x:Key="WindowCaptionBackground">Transparent</SolidColorBrush>
+			<LinearGradientBrush StartPoint="1,0"
+								 EndPoint="0.5,1"
+								 x:Key="WindowCaptionBackgroundDisabled">
+				<GradientStop Color="#FF636CBA"
+							  Offset="0" />
+				<GradientStop Color="#88636CBA"
+							  Offset="0.1" />
+				<GradientStop Color="Transparent"
+							  Offset="1" />
+			</LinearGradientBrush>
+			<SolidColorBrush x:Key="WindowCaptionForeground">Gray</SolidColorBrush>
+			<SolidColorBrush x:Key="WindowCaptionForegroundDisabled">Pink</SolidColorBrush>
 		</ResourceDictionary>
 	</Application.Resources>
 </Application>

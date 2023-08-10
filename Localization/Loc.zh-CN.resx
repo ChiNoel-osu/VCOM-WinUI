@@ -109,4 +109,7 @@
   <data name="Language" xml:space="preserve">
     <value>语言</value>
   </data>
+  <data name="COMList" xml:space="preserve">
+    <value>COM设备列表</value>
+  </data>
 </root>

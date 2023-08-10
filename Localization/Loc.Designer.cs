@@ -61,6 +61,15 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to COM Device List.
+        /// </summary>
+        internal static string COMList {
+            get {
+                return ResourceManager.GetString("COMList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         internal static string Language {

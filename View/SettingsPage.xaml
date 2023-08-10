@@ -8,8 +8,7 @@
 	  d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  mc:Ignorable="d"
-	  Background="Transparent">
+	  mc:Ignorable="d">
 	<Grid>
 		<StackPanel Margin="20,10"
 					Spacing="10">
@@ -18,7 +17,7 @@
 				<FontIcon Glyph="&#xE713;"
 						  Margin="0,3,10,0" />
 				<TextBlock Text="{x:Bind loc:Loc.Settings}"
-						   Style="{StaticResource TitleTextBlockStyle}"/>
+						   Style="{StaticResource TitleTextBlockStyle}" />
 			</StackPanel>
 			<Grid Height="2"
 				  Margin="-20,2,-20,0">
@@ -47,10 +46,15 @@
 				</ComboBox.Items>
 			</ComboBox>
 		</StackPanel>
-		<InfoBar IsOpen="True"
+		<InfoBar IsOpen="{Binding Settings.RestartInfoEnabled, Mode=TwoWay}"
 				 VerticalAlignment="Bottom"
 				 Severity="Informational"
-				 Title="Language Settings"
-				 Message="You'll need to restart the app." />
+				 Message="{Binding Settings.RestartInfoString, Mode=OneWay}">
+			<InfoBar.ActionButton>
+				<Button Content="{Binding Settings.RestartButtonString, Mode=OneWay}"
+						HorizontalAlignment="Right"
+						Command="{Binding Settings.RestartCommand}" />
+			</InfoBar.ActionButton>
+		</InfoBar>
 	</Grid>
 </Page>

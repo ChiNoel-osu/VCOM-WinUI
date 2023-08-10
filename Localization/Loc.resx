@@ -109,4 +109,7 @@
   <data name="Language" xml:space="preserve">
     <value>Language</value>
   </data>
+  <data name="COMList" xml:space="preserve">
+    <value>COM Device List</value>
+  </data>
 </root>

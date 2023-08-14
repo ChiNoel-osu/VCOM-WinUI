@@ -2,7 +2,7 @@
 {
 	public struct COMDeviceModel
 	{
-		public string COMNum { get; set; }
+		public string COMNumStr { get; set; }
 		public string COMDeviceName { get; set; }
 		public bool IsOpen { get; set; }
 	}

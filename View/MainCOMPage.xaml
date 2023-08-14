@@ -36,7 +36,7 @@
 							<StackPanel Margin="0,5"
 										Spacing="5">
 								<TextBlock Style="{StaticResource BodyTextBlockStyle}"
-										   Text="{Binding COMNum}" />
+										   Text="{Binding COMNumStr}" />
 								<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
 										   Text="{Binding COMDeviceName}" />
 							</StackPanel>

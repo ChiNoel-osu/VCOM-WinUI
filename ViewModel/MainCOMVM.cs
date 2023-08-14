@@ -12,6 +12,10 @@ namespace VCOM_WinUI.ViewModel
 	{
 		[ObservableProperty]
 		ObservableCollection<COMDeviceModel> _COMList = new ObservableCollection<COMDeviceModel>();
+		[ObservableProperty]
+		bool _NoCOM = true;
+
+		public COMDeviceModel ListSelectedCOM { get; set; }
 
 		Dictionary<string, string> portNumNameDict = new Dictionary<string, string>();
 		public MainCOMVM()
@@ -23,6 +27,7 @@ namespace VCOM_WinUI.ViewModel
 				portNumNameDict.Add(portNum, portNames.Where(name => name.Contains(portNum)).FirstOrDefault("Unknown Device"));
 			foreach (KeyValuePair<string, string> portPair in portNumNameDict)
 				COMList.Add(new COMDeviceModel { COMNumStr = portPair.Key, COMDeviceName = portPair.Value, IsOpen = false });
+			NoCOM = _COMList.Count == 0;
 		}
 	}
 }

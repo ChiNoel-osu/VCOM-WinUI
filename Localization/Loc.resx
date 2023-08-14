@@ -112,4 +112,7 @@
   <data name="COMList" xml:space="preserve">
     <value>COM Device List</value>
   </data>
+  <data name="NOCOMText" xml:space="preserve">
+    <value>There's nothing here.</value>
+  </data>
 </root>

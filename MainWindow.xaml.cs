@@ -15,15 +15,16 @@ namespace VCOM_WinUI
 		{
 			this.InitializeComponent();
 			ExtendsContentIntoTitleBar = true;  //Hide default title bar.
-			SetTitleBar(AppTitleBar);	//Set custom title bar.
+			SetTitleBar(AppTitleBar);   //Set custom title bar.
 			MainNavView.DataContext = ViewModel.MainViewModel.Instance;
 			ContentFrame.Navigate(typeof(MainCOMPage));
 		}
 
+		string currentPage;
 		private void MainNavView_ItemInvoked(Microsoft.UI.Xaml.Controls.NavigationView sender, Microsoft.UI.Xaml.Controls.NavigationViewItemInvokedEventArgs args)
 		{   //The Tag property contains the full type of the Page.
-			if (args.InvokedItemContainer.Tag is not null)
-				ContentFrame.Navigate(System.Type.GetType(args.InvokedItemContainer.Tag.ToString()));
+			if (args.InvokedItemContainer.Tag is not null && currentPage != args.InvokedItemContainer.Tag.ToString())
+				ContentFrame.Navigate(System.Type.GetType(currentPage = args.InvokedItemContainer.Tag.ToString()));
 		}
 	}
 }

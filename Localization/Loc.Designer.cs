@@ -97,6 +97,15 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There&apos;s nothing here..
+        /// </summary>
+        internal static string NOCOMText {
+            get {
+                return ResourceManager.GetString("NOCOMText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         internal static string Settings {

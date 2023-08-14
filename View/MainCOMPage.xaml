@@ -16,21 +16,25 @@
 							  MinWidth="100" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
-		<Border BorderBrush="Gray"
+		<Border Grid.Column="0"
+				Grid.Row="0"
+				BorderBrush="Gray"
 				BorderThickness="2"
 				Margin="5"
 				CornerRadius="8">
-			<controls:DockPanel Grid.Column="0"
-								Grid.Row="0">
+			<controls:DockPanel>
 				<TextBlock controls:DockPanel.Dock="Top"
 						   HorizontalAlignment="Center"
 						   Margin="20,10"
 						   Text="{x:Bind loc:Loc.COMList}"
 						   Style="{StaticResource SubtitleTextBlockStyle}" />
 				<ListView controls:DockPanel.Dock="Bottom"
+						  SelectedItem="{Binding MainCOM.ListSelectedCOM, Mode=TwoWay}"
 						  SelectionMode="Single"
-						  ItemsSource="{Binding MainCOM.COMList}"
-						  CanReorderItems="True">
+						  ItemsSource="{Binding MainCOM.COMList, Mode=OneWay}"
+						  CanDragItems="True"
+						  CanReorderItems="True"
+						  AllowDrop="True">
 					<ListView.ItemTemplate>
 						<DataTemplate>
 							<StackPanel Margin="0,5"
@@ -38,12 +42,19 @@
 								<TextBlock Style="{StaticResource BodyTextBlockStyle}"
 										   Text="{Binding COMNumStr}" />
 								<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
-										   Text="{Binding COMDeviceName}" />
+										   Text="{Binding COMDeviceName}"
+										   Margin="0,-4,0,2" />
 							</StackPanel>
 						</DataTemplate>
 					</ListView.ItemTemplate>
 				</ListView>
 			</controls:DockPanel>
 		</Border>
+		<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+				   Foreground="{ThemeResource TextFillColorSecondary}"
+				   Text="{x:Bind loc:Loc.NOCOMText}"
+				   Visibility="{Binding MainCOM.NoCOM, Mode=OneWay}"
+				   HorizontalAlignment="Center"
+				   VerticalAlignment="Center" />
 	</Grid>
 </Page>

@@ -112,4 +112,7 @@
   <data name="COMList" xml:space="preserve">
     <value>COM设备列表</value>
   </data>
+  <data name="NOCOMText" xml:space="preserve">
+    <value>这里空空如也.</value>
+  </data>
 </root>

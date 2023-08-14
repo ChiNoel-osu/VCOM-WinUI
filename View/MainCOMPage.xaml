@@ -16,6 +16,7 @@
 							  MinWidth="100" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
+		<!--#region Grid(0,0)-->
 		<Border Grid.Column="0"
 				Grid.Row="0"
 				BorderBrush="Gray"
@@ -50,11 +51,30 @@
 				</ListView>
 			</controls:DockPanel>
 		</Border>
-		<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+		<!--Binding a boolean value to Visibility property works, why?-->
+		<!--It's very convenient nonetheless-->
+		<Button Grid.Column="0"
+				Grid.Row="0"
+				Height="40"
+				Width="40"
+				Margin="15"
+				Padding="0"
+				CornerRadius="8"
+				HorizontalAlignment="Left"
+				VerticalAlignment="Bottom"
+				Command="{Binding MainCOM.RefreshCOMListCommand}">
+			<Button.Content>
+				<FontIcon Glyph="&#xE72C;" />
+			</Button.Content>
+		</Button>
+		<TextBlock Grid.Column="0"
+				   Grid.Row="0"
+				   Style="{StaticResource CaptionTextBlockStyle}"
 				   Foreground="{ThemeResource TextFillColorSecondary}"
 				   Text="{x:Bind loc:Loc.NOCOMText}"
 				   Visibility="{Binding MainCOM.NoCOM, Mode=OneWay}"
 				   HorizontalAlignment="Center"
 				   VerticalAlignment="Center" />
+		<!--#endregion-->
 	</Grid>
 </Page>

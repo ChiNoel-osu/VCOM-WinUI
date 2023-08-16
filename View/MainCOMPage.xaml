@@ -3,6 +3,7 @@
 	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:local="using:VCOM_WinUI.View"
+	  xmlns:triggers="using:CommunityToolkit.WinUI.UI.Triggers"
 	  xmlns:loc="using:VCOM_WinUI.Localization"
 	  xmlns:vm="using:VCOM_WinUI.ViewModel"
 	  d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -38,14 +39,54 @@
 						  AllowDrop="True">
 					<ListView.ItemTemplate>
 						<DataTemplate>
-							<StackPanel Margin="0,5"
-										Spacing="5">
-								<TextBlock Style="{StaticResource BodyTextBlockStyle}"
-										   Text="{Binding COMNumStr}" />
-								<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
-										   Text="{Binding COMDeviceName}"
-										   Margin="0,-4,0,2" />
-							</StackPanel>
+							<!--To make the VisualStateManager work, the template must be wrapped in a UserControl.-->
+							<!--The VisualStateManager.VisualStateGroups should be defined-->
+							<!--in the one and only control of the template, in this case, the StackPanel.-->
+							<UserControl>
+								<StackPanel controls:DockPanel.Dock="Left"
+											VerticalAlignment="Center"
+											Margin="0,5"
+											Spacing="5">
+									<VisualStateManager.VisualStateGroups>
+										<VisualStateGroup>
+											<VisualState>
+												<VisualState.StateTriggers>
+													<triggers:IsEqualStateTrigger Value="{Binding IsOpen, Mode=OneWay}"
+																				  To="True" />
+												</VisualState.StateTriggers>
+												<VisualState.Setters>
+													<Setter Target="SPStateIndicator.Fill"
+															Value="Lime" />
+												</VisualState.Setters>
+											</VisualState>
+											<VisualState>
+												<VisualState.StateTriggers>
+													<triggers:IsEqualStateTrigger Value="{Binding IsOpen, Mode=OneWay}"
+																				  To="False" />
+												</VisualState.StateTriggers>
+												<VisualState.Setters>
+													<Setter Target="SPStateIndicator.Fill"
+															Value="Gray" />
+												</VisualState.Setters>
+											</VisualState>
+										</VisualStateGroup>
+									</VisualStateManager.VisualStateGroups>
+									<controls:DockPanel>
+										<Rectangle x:Name="SPStateIndicator"
+												   controls:DockPanel.Dock="Right"
+												   Height="5"
+												   Width="20"
+												   RadiusX="2"
+												   RadiusY="10" />
+										<TextBlock controls:DockPanel.Dock="Left"
+												   Style="{StaticResource BodyTextBlockStyle}"
+												   Text="{Binding COMNumStr}" />
+									</controls:DockPanel>
+									<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+											   Text="{Binding COMDeviceName}"
+											   Margin="0,-4,0,2" />
+								</StackPanel>
+							</UserControl>
 						</DataTemplate>
 					</ListView.ItemTemplate>
 				</ListView>

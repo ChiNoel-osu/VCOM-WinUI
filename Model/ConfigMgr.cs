@@ -1,10 +1,10 @@
-﻿using System.Configuration;
-using System;
+﻿using System;
+using System.Configuration;
 
 namespace VCOM_WinUI.Model
 {
 	public static class ConfigMgr
-	{	//TODO: ERROR Handling!
+	{   //TODO: ERROR Handling!
 		public static string ReadSetting(string key)
 		{
 			try

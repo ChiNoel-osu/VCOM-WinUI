@@ -14,7 +14,7 @@
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto"
-							  MinWidth="100" />
+							  MinWidth="210" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 		<!--#region Grid(0,0)-->
@@ -31,6 +31,8 @@
 						   Text="{x:Bind loc:Loc.COMList}"
 						   Style="{StaticResource SubtitleTextBlockStyle}" />
 				<ListView controls:DockPanel.Dock="Bottom"
+						  SelectionChanged="COMDeviceList_SelectionChanged"
+						  x:Name="COMDeviceList"
 						  SelectedItem="{Binding MainCOM.ListSelectedCOM, Mode=TwoWay}"
 						  SelectionMode="Single"
 						  ItemsSource="{Binding MainCOM.COMList, Mode=OneWay}"
@@ -42,7 +44,8 @@
 							<!--To make the VisualStateManager work, the template must be wrapped in a UserControl.-->
 							<!--The VisualStateManager.VisualStateGroups should be defined-->
 							<!--in the one and only control of the template, in this case, the StackPanel.-->
-							<UserControl>
+							<UserControl DoubleTapped="COMDevice_DoubleTapped"
+										 Tag="{Binding COMNumStr}">
 								<StackPanel controls:DockPanel.Dock="Left"
 											VerticalAlignment="Center"
 											Margin="0,5"
@@ -92,22 +95,59 @@
 				</ListView>
 			</controls:DockPanel>
 		</Border>
+		<controls:DockPanel VerticalAlignment="Bottom"
+							HorizontalAlignment="Stretch">
+			<Button controls:DockPanel.Dock="Left"
+					Grid.Column="0"
+					Grid.Row="0"
+					Height="40"
+					Width="40"
+					Margin="15"
+					Padding="0"
+					CornerRadius="8"
+					Command="{Binding MainCOM.RefreshCOMListCommand}">
+				<Button.Content>
+					<FontIcon Glyph="&#xE72C;" />
+				</Button.Content>
+			</Button>
+			<Button controls:DockPanel.Dock="Right"
+					Grid.Column="0"
+					Grid.Row="0"
+					Height="40"
+					Width="40"
+					Margin="15"
+					Padding="0"
+					CornerRadius="8">
+				<Button.Content>
+					<FontIcon Glyph="&#xE9E9;" />
+				</Button.Content>
+				<Button.Flyout>
+					<Flyout Placement="RightEdgeAlignedBottom"
+							ShowMode="Standard"
+							AllowFocusOnInteraction="True">
+						<StackPanel Width="200"
+									Height="400">
+							<TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
+									   Text="{x:Bind loc:Loc.PortSettings}" />
+						</StackPanel>
+					</Flyout>
+				</Button.Flyout>
+			</Button>
+			<ToggleButton controls:DockPanel.Dock="Left"
+						  Grid.Column="0"
+						  Grid.Row="0"
+						  Height="40"
+						  HorizontalAlignment="Stretch"
+						  Margin="-8"
+						  Padding="0,-1,0,0"
+						  CornerRadius="8"
+						  IsChecked="{Binding MainCOM.IsCurrentPortOpen, Mode=TwoWay}"
+						  Command="{Binding MainCOM.TogglePortCommand}"
+						  CommandParameter="{Binding ElementName=COMDeviceList, Path=SelectedItem.COMNumStr}" />
+		</controls:DockPanel>
+		<!--This TextBlock will be displayed when there's nothing in the ListView.-->
 		<!--Binding a boolean value to Visibility property works, why?-->
 		<!--It's very convenient nonetheless-->
-		<Button Grid.Column="0"
-				Grid.Row="0"
-				Height="40"
-				Width="40"
-				Margin="15"
-				Padding="0"
-				CornerRadius="8"
-				HorizontalAlignment="Left"
-				VerticalAlignment="Bottom"
-				Command="{Binding MainCOM.RefreshCOMListCommand}">
-			<Button.Content>
-				<FontIcon Glyph="&#xE72C;" />
-			</Button.Content>
-		</Button>
 		<TextBlock Grid.Column="0"
 				   Grid.Row="0"
 				   Style="{StaticResource CaptionTextBlockStyle}"

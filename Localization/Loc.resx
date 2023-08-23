@@ -115,4 +115,13 @@
   <data name="NOCOMText" xml:space="preserve">
     <value>There's nothing here.</value>
   </data>
+  <data name="OpenPort" xml:space="preserve">
+    <value>Open Port</value>
+  </data>
+  <data name="ClosePort" xml:space="preserve">
+    <value>Close Port</value>
+  </data>
+  <data name="PortSettings" xml:space="preserve">
+    <value>Port Settings</value>
+  </data>
 </root>

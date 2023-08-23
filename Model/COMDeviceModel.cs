@@ -1,9 +1,13 @@
-﻿namespace VCOM_WinUI.Model
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace VCOM_WinUI.Model
 {
-	public struct COMDeviceModel
+	public partial class COMDeviceModel : ObservableObject
 	{
 		public string COMNumStr { get; set; }
 		public string COMDeviceName { get; set; }
-		public bool IsOpen { get; set; }
+
+		[ObservableProperty]
+		bool _IsOpen = false;
 	}
 }

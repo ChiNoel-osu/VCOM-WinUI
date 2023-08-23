@@ -61,6 +61,15 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close Port.
+        /// </summary>
+        internal static string ClosePort {
+            get {
+                return ResourceManager.GetString("ClosePort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to COM Device List.
         /// </summary>
         internal static string COMList {
@@ -102,6 +111,24 @@ namespace VCOM_WinUI.Localization {
         internal static string NOCOMText {
             get {
                 return ResourceManager.GetString("NOCOMText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Port.
+        /// </summary>
+        internal static string OpenPort {
+            get {
+                return ResourceManager.GetString("OpenPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Port Settings.
+        /// </summary>
+        internal static string PortSettings {
+            get {
+                return ResourceManager.GetString("PortSettings", resourceCulture);
             }
         }
         

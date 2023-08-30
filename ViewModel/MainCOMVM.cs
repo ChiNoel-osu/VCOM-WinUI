@@ -24,6 +24,8 @@ namespace VCOM_WinUI.ViewModel
 
 		public COMDeviceModel? ListSelectedCOM { get; set; } = null;
 
+		List<SerialPort> activeSPs = new List<SerialPort>();
+
 		Dictionary<string, string> portNumNameDict = new Dictionary<string, string>();
 
 		[RelayCommand]
@@ -33,7 +35,7 @@ namespace VCOM_WinUI.ViewModel
 			{
 				string[] oldPortNums = portNumNameDict.Keys.ToArray();
 				portNumNameDict.Clear();
-				ListSelectedCOM = null;
+				//ListSelectedCOM = null;
 				using ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption like '%(COM%'");
 				string[] portNums = SerialPort.GetPortNames();
 				string[] portNames = searcher.Get().Cast<ManagementBaseObject>().ToList().Select(obj => obj["Caption"].ToString()).ToArray();
@@ -46,20 +48,22 @@ namespace VCOM_WinUI.ViewModel
 						dontAdd.Add(oldPortNum);
 					else                                    //Add not existing port to the "Remove" list.
 						removeThis.Add(oldPortNum);
+				//Create an array of reference of COMDeviceModel that's going to be deleted.
 				COMDeviceModel[] toBeRemoved = (from device in COMList where removeThis.Contains(device.COMNumStr) select device).ToArray();
 				dispatcher.TryEnqueue(() =>
 				{   //Use UI thread to update COMList.
+					if (toBeRemoved.Contains(ListSelectedCOM))
+						ListSelectedCOM = null;
+					IsCurrentPortOpen = ListSelectedCOM is not null && ListSelectedCOM.IsOpen;   //Update Visuals.
 					foreach (COMDeviceModel rm in toBeRemoved)
 						COMList.Remove(rm);
 					foreach (KeyValuePair<string, string> portPair in portNumNameDict)
 						if (dontAdd.Contains(portPair.Key)) continue;   //Skip existing port.
-						else
-							COMList.Add(new COMDeviceModel { COMNumStr = portPair.Key, COMDeviceName = portPair.Value, IsOpen = false });
+						else COMList.Add(new COMDeviceModel { COMNumStr = portPair.Key, COMDeviceName = portPair.Value, IsOpen = false });
 					//COMList.Add(new COMDeviceModel { COMNumStr = "uh whatever", COMDeviceName = "Ain't nobody got time for this.", IsOpen = true });   //Test
 					NoCOM = COMList.Count == 0;    //Update visibility.
 				});
 			});
-			IsCurrentPortOpen = ListSelectedCOM is not null;	//TODO: The ListSelectedCOM somehow changes to null after refreshing.
 		}
 
 		[RelayCommand]
@@ -67,8 +71,15 @@ namespace VCOM_WinUI.ViewModel
 		{
 			if (ListSelectedCOM is not null)
 			{
-				ListSelectedCOM.IsOpen = !ListSelectedCOM.IsOpen;
-				IsCurrentPortOpen = ListSelectedCOM.IsOpen;
+				ListSelectedCOM.IsOpen = !ListSelectedCOM.IsOpen;   //Toggle Port
+				if (IsCurrentPortOpen = ListSelectedCOM.IsOpen)     //Update Visuals
+				{   //Open Port
+
+				}
+				else
+				{   //Close Port
+
+				}
 			}
 			else
 				IsCurrentPortOpen = false;

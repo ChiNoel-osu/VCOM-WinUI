@@ -105,6 +105,7 @@
 					Margin="15"
 					Padding="0"
 					CornerRadius="8"
+					IsEnabled="{Binding MainCOM.IsNotRefreshing, Mode=OneWay}"
 					Command="{Binding MainCOM.RefreshCOMListCommand}">
 				<Button.Content>
 					<FontIcon Glyph="&#xE72C;" />

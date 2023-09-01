@@ -21,6 +21,8 @@ namespace VCOM_WinUI.ViewModel
 		bool _NoCOM = true;
 		[ObservableProperty]
 		bool _IsCurrentPortOpen = false;
+		[ObservableProperty]
+		bool _IsNotRefreshing = true;
 
 		public COMDeviceModel? ListSelectedCOM { get; set; } = null;
 
@@ -31,6 +33,8 @@ namespace VCOM_WinUI.ViewModel
 		[RelayCommand]
 		public void RefreshCOMList()
 		{
+			if (!IsNotRefreshing) return;   //Still refreshing.
+			IsNotRefreshing = false;		//Update RefreshBtn IsEnabled.	
 			Task.Run(() =>
 			{
 				string[] oldPortNums = portNumNameDict.Keys.ToArray();
@@ -61,7 +65,8 @@ namespace VCOM_WinUI.ViewModel
 						if (dontAdd.Contains(portPair.Key)) continue;   //Skip existing port.
 						else COMList.Add(new COMDeviceModel { COMNumStr = portPair.Key, COMDeviceName = portPair.Value, IsOpen = false });
 					//COMList.Add(new COMDeviceModel { COMNumStr = "uh whatever", COMDeviceName = "Ain't nobody got time for this.", IsOpen = true });   //Test
-					NoCOM = COMList.Count == 0;    //Update visibility.
+					NoCOM = COMList.Count == 0;	//Update visibility.
+					IsNotRefreshing = true;		//Update RefreshBtn IsEnabled.	
 				});
 			});
 		}

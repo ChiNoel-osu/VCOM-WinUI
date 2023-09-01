@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml;
+using System.Threading.Tasks;
 using VCOM_WinUI.View;
 using WinUIEx.Messaging;
 
@@ -19,14 +20,17 @@ namespace VCOM_WinUI
 			SetTitleBar(AppTitleBar);   //Set custom title bar.
 			MainNavView.DataContext = ViewModel.MainViewModel.Instance;
 			ContentFrame.Navigate(typeof(MainCOMPage));
-			WindowMessageMonitor monitor = new WindowMessageMonitor(this);
-			monitor.WindowMessageReceived += Monitor_WindowMessageReceived;
+			ViewModel.MainViewModel.WndMsgMonitor = new WindowMessageMonitor(this); //Put it in VM and make it static so it won't be disposed??
+			ViewModel.MainViewModel.WndMsgMonitor.WindowMessageReceived += Monitor_WindowMessageReceived; //Register window message event.
 		}
 
-		private void Monitor_WindowMessageReceived(object sender, WindowMessageEventArgs e)
-		{
-			if (e.Message.MessageId == 537 && e.Message.WParam == 0x7)  //WM_DEVICECHANGE->DBT_DEVNODES_CHANGED
-				;
+		private async void Monitor_WindowMessageReceived(object sender, WindowMessageEventArgs e)
+		{   //Does this affect performance? idk.
+			if (e.Message.MessageId == 537 && e.Message.WParam == 0x7 && ViewModel.MainViewModel.Instance.MainCOM.IsNotRefreshing)  //WM_DEVICECHANGE->DBT_DEVNODES_CHANGED
+			{
+				await Task.Delay(500);		//Wait a bit so GetPortNames can actually get something.
+				ViewModel.MainViewModel.Instance.MainCOM.RefreshCOMList();
+			}
 		}
 
 		string currentPage;

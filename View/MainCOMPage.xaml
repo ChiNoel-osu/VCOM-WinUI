@@ -128,16 +128,79 @@
 					<Flyout Placement="RightEdgeAlignedBottom"
 							ShowMode="Standard"
 							AllowFocusOnInteraction="True">
-						<StackPanel Width="200"
-									Height="400">
-							<StackPanel Orientation="Horizontal" Spacing="8">
+						<StackPanel Width="180"
+									Spacing="5">
+							<StackPanel Orientation="Horizontal"
+										Padding="0,0,0,10"
+										Spacing="8">
 								<TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
 										   VerticalAlignment="Center"
 										   Text="{x:Bind loc:Loc.PortSettings}" />
 								<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
 										   VerticalAlignment="Bottom"
-										   Text="{Binding MainCOM.SettingPortString, Mode=OneWay}"/>
+										   Text="{Binding MainCOM.SettingPortString, Mode=OneWay}" />
 							</StackPanel>
+							<Grid>
+								<TextBlock HorizontalAlignment="Left"
+										   VerticalAlignment="Center"
+										   Text="{x:Bind loc:Loc.Baudrate}"
+										   Style="{StaticResource BodyTextBlockStyle}" />
+								<ComboBox HorizontalAlignment="Right"
+										  SelectedIndex="6">
+									<ComboBox.Items>
+										<x:Int32>4800</x:Int32>
+										<x:Int32>9600</x:Int32>
+										<x:Int32>19200</x:Int32>
+										<x:Int32>28800</x:Int32>
+										<x:Int32>38400</x:Int32>
+										<x:Int32>57600</x:Int32>
+										<x:Int32>115200</x:Int32>
+										<x:Int32>921600</x:Int32>
+									</ComboBox.Items>
+								</ComboBox>
+							</Grid>
+							<Grid>
+								<TextBlock HorizontalAlignment="Left"
+										   VerticalAlignment="Center"
+										   Text="{x:Bind loc:Loc.Databits}"
+										   Style="{StaticResource BodyTextBlockStyle}" />
+							</Grid>
+							<Grid>
+								<TextBlock HorizontalAlignment="Left"
+										   VerticalAlignment="Center"
+										   Text="{x:Bind loc:Loc.Stopbits}"
+										   Style="{StaticResource BodyTextBlockStyle}" />
+								<ComboBox HorizontalAlignment="Right"
+										  SelectedIndex="0">
+									<ComboBox.Items>
+										<x:Double>1</x:Double>
+										<x:Double>1.5</x:Double>
+										<x:Double>2</x:Double>
+									</ComboBox.Items>
+								</ComboBox>
+							</Grid>
+							<Grid>
+								<TextBlock HorizontalAlignment="Left"
+										   VerticalAlignment="Center"
+										   Text="{x:Bind loc:Loc.Parity}"
+										   Style="{StaticResource BodyTextBlockStyle}" />
+								<ComboBox HorizontalAlignment="Right"
+										  SelectedIndex="0">
+									<ComboBox.Items>
+										<x:String>None</x:String>
+										<x:String>Odd</x:String>
+										<x:String>Even</x:String>
+										<x:String>Mark</x:String>
+										<x:String>Space</x:String>
+									</ComboBox.Items>
+								</ComboBox>
+							</Grid>
+							<Grid>
+								<TextBlock HorizontalAlignment="Left"
+										   VerticalAlignment="Center"
+										   Text="{x:Bind loc:Loc.FlowCtrl}"
+										   Style="{StaticResource BodyTextBlockStyle}" />
+							</Grid>
 						</StackPanel>
 					</Flyout>
 				</Button.Flyout>

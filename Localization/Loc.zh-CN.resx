@@ -127,4 +127,19 @@
   <data name="Default" xml:space="preserve">
     <value>默认</value>
   </data>
+  <data name="Baudrate" xml:space="preserve">
+    <value>波特率</value>
+  </data>
+  <data name="Databits" xml:space="preserve">
+    <value>数据位</value>
+  </data>
+  <data name="Stopbits" xml:space="preserve">
+    <value>停止位</value>
+  </data>
+  <data name="Parity" xml:space="preserve">
+    <value>校验</value>
+  </data>
+  <data name="FlowCtrl" xml:space="preserve">
+    <value>流控制</value>
+  </data>
 </root>

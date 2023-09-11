@@ -127,4 +127,19 @@
   <data name="Default" xml:space="preserve">
     <value>Default</value>
   </data>
+  <data name="Baudrate" xml:space="preserve">
+    <value>Baudrate</value>
+  </data>
+  <data name="Databits" xml:space="preserve">
+    <value>Databits</value>
+  </data>
+  <data name="Stopbits" xml:space="preserve">
+    <value>Stopbits</value>
+  </data>
+  <data name="Parity" xml:space="preserve">
+    <value>Parity</value>
+  </data>
+  <data name="FlowCtrl" xml:space="preserve">
+    <value>Flow Ctrl</value>
+  </data>
 </root>

@@ -41,8 +41,8 @@
 					   Style="{StaticResource SubtitleTextBlockStyle}" />
 			<ComboBox SelectedIndex="{Binding Settings.LanguageIndex, Mode=TwoWay}">
 				<ComboBox.Items>
-					<ComboBoxItem Content="English" />
-					<ComboBoxItem Content="中文" />
+					<x:String>English</x:String>
+					<x:String>中文</x:String>
 				</ComboBox.Items>
 			</ComboBox>
 		</StackPanel>

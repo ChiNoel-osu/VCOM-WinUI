@@ -61,6 +61,15 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Baudrate.
+        /// </summary>
+        internal static string Baudrate {
+            get {
+                return ResourceManager.GetString("Baudrate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close Port.
         /// </summary>
         internal static string ClosePort {
@@ -79,11 +88,29 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Databits.
+        /// </summary>
+        internal static string Databits {
+            get {
+                return ResourceManager.GetString("Databits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default.
         /// </summary>
         internal static string Default {
             get {
                 return ResourceManager.GetString("Default", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flow Ctrl.
+        /// </summary>
+        internal static string FlowCtrl {
+            get {
+                return ResourceManager.GetString("FlowCtrl", resourceCulture);
             }
         }
         
@@ -133,6 +160,15 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parity.
+        /// </summary>
+        internal static string Parity {
+            get {
+                return ResourceManager.GetString("Parity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Port Settings.
         /// </summary>
         internal static string PortSettings {
@@ -147,6 +183,15 @@ namespace VCOM_WinUI.Localization {
         internal static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopbits.
+        /// </summary>
+        internal static string Stopbits {
+            get {
+                return ResourceManager.GetString("Stopbits", resourceCulture);
             }
         }
     }

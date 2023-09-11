@@ -88,7 +88,7 @@ namespace VCOM_WinUI.ViewModel
 					else
 					{   //Port does not exist
 						serialPort = new SerialPort()
-						{   //TODO: Initiate SP with default param.
+						{   //TODO: Initiate SP with default PARAM.
 							PortName = portName,
 							BaudRate = 9600,
 							DataBits = 8,

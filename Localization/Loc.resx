@@ -124,4 +124,7 @@
   <data name="PortSettings" xml:space="preserve">
     <value>Port Settings</value>
   </data>
+  <data name="Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
 </root>

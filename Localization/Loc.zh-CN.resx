@@ -124,4 +124,7 @@
   <data name="PortSettings" xml:space="preserve">
     <value>串口设置</value>
   </data>
+  <data name="Default" xml:space="preserve">
+    <value>默认</value>
+  </data>
 </root>

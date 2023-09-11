@@ -28,7 +28,7 @@ namespace VCOM_WinUI
 		{   //Does this affect performance? idk.
 			if (e.Message.MessageId == 537 && e.Message.WParam == 0x7 && ViewModel.MainViewModel.Instance.MainCOM.IsNotRefreshing)  //WM_DEVICECHANGE->DBT_DEVNODES_CHANGED
 			{
-				await Task.Delay(500);		//Wait a bit so GetPortNames can actually get something.
+				await Task.Delay(500);      //Wait a bit so GetPortNames can actually get something.
 				ViewModel.MainViewModel.Instance.MainCOM.RefreshCOMList();
 			}
 		}

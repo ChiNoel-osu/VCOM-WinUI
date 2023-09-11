@@ -13,7 +13,7 @@ namespace VCOM_WinUI.ViewModel
 {
 	public partial class MainCOMVM : ObservableObject
 	{
-		DispatcherQueue dispatcher = DispatcherQueue.GetForCurrentThread(); //Gets the UI thread.
+		readonly DispatcherQueue dispatcher = DispatcherQueue.GetForCurrentThread(); //Gets the UI thread.
 
 		[ObservableProperty]
 		ObservableCollection<COMDeviceModel> _COMList = new ObservableCollection<COMDeviceModel>();
@@ -23,8 +23,10 @@ namespace VCOM_WinUI.ViewModel
 		bool _IsCurrentPortOpen = false;
 		[ObservableProperty]
 		bool _IsNotRefreshing = true;
+		[ObservableProperty]
+		string _SettingPortString = Localization.Loc.Default;
 
-		public COMDeviceModel? ListSelectedCOM { get; set; } = null;
+		public COMDeviceModel? ListSelectedCOM { get; set; }
 
 		List<SerialPort> activeSPs = new List<SerialPort>();
 
@@ -34,7 +36,7 @@ namespace VCOM_WinUI.ViewModel
 		public void RefreshCOMList()
 		{
 			if (!IsNotRefreshing) return;   //Still refreshing.
-			IsNotRefreshing = false;		//Update RefreshBtn IsEnabled.	
+			IsNotRefreshing = false;        //Update RefreshBtn IsEnabled.	
 			Task.Run(() =>
 			{
 				string[] oldPortNums = portNumNameDict.Keys.ToArray();
@@ -65,8 +67,8 @@ namespace VCOM_WinUI.ViewModel
 						if (dontAdd.Contains(portPair.Key)) continue;   //Skip existing port.
 						else COMList.Add(new COMDeviceModel { COMNumStr = portPair.Key, COMDeviceName = portPair.Value, IsOpen = false });
 					//COMList.Add(new COMDeviceModel { COMNumStr = "uh whatever", COMDeviceName = "Ain't nobody got time for this.", IsOpen = true });   //Test
-					NoCOM = COMList.Count == 0;	//Update visibility.
-					IsNotRefreshing = true;		//Update RefreshBtn IsEnabled.	
+					NoCOM = COMList.Count == 0; //Update visibility.
+					IsNotRefreshing = true;     //Update RefreshBtn IsEnabled.	
 				});
 			});
 		}
@@ -76,15 +78,33 @@ namespace VCOM_WinUI.ViewModel
 		{
 			if (ListSelectedCOM is not null)
 			{
-				ListSelectedCOM.IsOpen = !ListSelectedCOM.IsOpen;   //Toggle Port
-				if (IsCurrentPortOpen = ListSelectedCOM.IsOpen)     //Update Visuals
-				{   //Open Port
-
+				SerialPort serialPort;
+				if (ListSelectedCOM.IsOpen = !ListSelectedCOM.IsOpen)     //Toggle Port
+				{   //TODO: Open Port
+					if (activeSPs.Any(sp => sp.PortName == portName))
+					{   //Port already exists (Opened before)
+						serialPort = activeSPs.First(sp => sp.PortName == portName);
+					}
+					else
+					{   //Port does not exist
+						serialPort = new SerialPort()
+						{   //TODO: Initiate SP with default param.
+							PortName = portName,
+							BaudRate = 9600,
+							DataBits = 8,
+							StopBits = StopBits.One,
+							Parity = Parity.None,
+						};
+						activeSPs.Add(serialPort);
+					}
+					serialPort.Open();
 				}
 				else
-				{   //Close Port
-
+				{   //TODO: Close Port
+					serialPort = activeSPs.First(sp => sp.PortName == portName);
+					serialPort.Close();
 				}
+				IsCurrentPortOpen = ListSelectedCOM.IsOpen = serialPort.IsOpen;     //Update Visuals
 			}
 			else
 				IsCurrentPortOpen = false;

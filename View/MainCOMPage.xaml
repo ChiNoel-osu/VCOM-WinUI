@@ -97,6 +97,7 @@
 		</Border>
 		<controls:DockPanel VerticalAlignment="Bottom"
 							HorizontalAlignment="Stretch">
+			<!--Refresh-->
 			<Button controls:DockPanel.Dock="Left"
 					Grid.Column="0"
 					Grid.Row="0"
@@ -111,6 +112,7 @@
 					<FontIcon Glyph="&#xE72C;" />
 				</Button.Content>
 			</Button>
+			<!--Port Settings-->
 			<Button controls:DockPanel.Dock="Right"
 					Grid.Column="0"
 					Grid.Row="0"
@@ -128,12 +130,19 @@
 							AllowFocusOnInteraction="True">
 						<StackPanel Width="200"
 									Height="400">
-							<TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
-									   Text="{x:Bind loc:Loc.PortSettings}" />
+							<StackPanel Orientation="Horizontal" Spacing="8">
+								<TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
+										   VerticalAlignment="Center"
+										   Text="{x:Bind loc:Loc.PortSettings}" />
+								<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+										   VerticalAlignment="Bottom"
+										   Text="{Binding MainCOM.SettingPortString, Mode=OneWay}"/>
+							</StackPanel>
 						</StackPanel>
 					</Flyout>
 				</Button.Flyout>
 			</Button>
+			<!--Toggle Port-->
 			<ToggleButton controls:DockPanel.Dock="Left"
 						  Grid.Column="0"
 						  Grid.Row="0"

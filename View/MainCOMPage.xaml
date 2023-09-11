@@ -146,7 +146,7 @@
 										   Text="{x:Bind loc:Loc.Baudrate}"
 										   Style="{StaticResource BodyTextBlockStyle}" />
 								<ComboBox HorizontalAlignment="Right"
-										  SelectedIndex="6">
+										  SelectedItem="{Binding MainCOM.SettingBaudRate, Mode=TwoWay}">
 									<ComboBox.Items>
 										<x:Int32>4800</x:Int32>
 										<x:Int32>9600</x:Int32>
@@ -164,6 +164,11 @@
 										   VerticalAlignment="Center"
 										   Text="{x:Bind loc:Loc.Databits}"
 										   Style="{StaticResource BodyTextBlockStyle}" />
+								<NumberBox HorizontalAlignment="Right"
+										   VerticalAlignment="Center"
+										   Value="{Binding MainCOM.SettingDataBits, Mode=TwoWay}"
+										   Minimum="1"
+										   SpinButtonPlacementMode="Compact" />
 							</Grid>
 							<Grid>
 								<TextBlock HorizontalAlignment="Left"
@@ -171,7 +176,7 @@
 										   Text="{x:Bind loc:Loc.Stopbits}"
 										   Style="{StaticResource BodyTextBlockStyle}" />
 								<ComboBox HorizontalAlignment="Right"
-										  SelectedIndex="0">
+										  SelectedIndex="{Binding MainCOM.SettingStopBitsOrdinal, Mode=TwoWay}">
 									<ComboBox.Items>
 										<x:Double>1</x:Double>
 										<x:Double>1.5</x:Double>
@@ -185,7 +190,7 @@
 										   Text="{x:Bind loc:Loc.Parity}"
 										   Style="{StaticResource BodyTextBlockStyle}" />
 								<ComboBox HorizontalAlignment="Right"
-										  SelectedIndex="0">
+										  SelectedIndex="{Binding MainCOM.SettingParityOrdinal, Mode=TwoWay}">
 									<ComboBox.Items>
 										<x:String>None</x:String>
 										<x:String>Odd</x:String>
@@ -200,6 +205,20 @@
 										   VerticalAlignment="Center"
 										   Text="{x:Bind loc:Loc.FlowCtrl}"
 										   Style="{StaticResource BodyTextBlockStyle}" />
+								<TextBlock HorizontalAlignment="Right"
+										   VerticalAlignment="Center"
+										   Text="{x:Bind loc:Loc.None}"
+										   Style="{StaticResource BodyStrongTextBlockStyle}" />
+							</Grid>
+							<Grid>
+								<TextBlock HorizontalAlignment="Left"
+										   VerticalAlignment="Center"
+										   Text="{x:Bind loc:Loc.HandShake}"
+										   Style="{StaticResource BodyTextBlockStyle}" />
+								<TextBlock HorizontalAlignment="Right"
+										   VerticalAlignment="Center"
+										   Text="{x:Bind loc:Loc.None}"
+										   Style="{StaticResource BodyStrongTextBlockStyle}" />
 							</Grid>
 						</StackPanel>
 					</Flyout>

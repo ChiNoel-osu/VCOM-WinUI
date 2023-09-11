@@ -128,7 +128,7 @@
     <value>Default</value>
   </data>
   <data name="Baudrate" xml:space="preserve">
-    <value>Baudrate</value>
+    <value>Baud Rate</value>
   </data>
   <data name="Databits" xml:space="preserve">
     <value>Databits</value>
@@ -141,5 +141,11 @@
   </data>
   <data name="FlowCtrl" xml:space="preserve">
     <value>Flow Ctrl</value>
+  </data>
+  <data name="HandShake" xml:space="preserve">
+    <value>Hand Shake</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
   </data>
 </root>

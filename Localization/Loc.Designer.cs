@@ -61,7 +61,7 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Baudrate.
+        ///   Looks up a localized string similar to Baud Rate.
         /// </summary>
         internal static string Baudrate {
             get {
@@ -115,6 +115,15 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hand Shake.
+        /// </summary>
+        internal static string HandShake {
+            get {
+                return ResourceManager.GetString("HandShake", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         internal static string Language {
@@ -147,6 +156,15 @@ namespace VCOM_WinUI.Localization {
         internal static string NOCOMText {
             get {
                 return ResourceManager.GetString("NOCOMText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        internal static string None {
+            get {
+                return ResourceManager.GetString("None", resourceCulture);
             }
         }
         

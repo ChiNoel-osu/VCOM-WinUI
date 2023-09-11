@@ -142,4 +142,10 @@
   <data name="FlowCtrl" xml:space="preserve">
     <value>流控制</value>
   </data>
+  <data name="HandShake" xml:space="preserve">
+    <value>握手模式</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>无</value>
+  </data>
 </root>

@@ -15,6 +15,7 @@ namespace VCOM_WinUI.ViewModel
 	{
 		readonly DispatcherQueue dispatcher = DispatcherQueue.GetForCurrentThread(); //Gets the UI thread.
 
+		#region Observable Properties
 		[ObservableProperty]
 		ObservableCollection<COMDeviceModel> _COMList = new ObservableCollection<COMDeviceModel>();
 		[ObservableProperty]
@@ -25,6 +26,17 @@ namespace VCOM_WinUI.ViewModel
 		bool _IsNotRefreshing = true;
 		[ObservableProperty]
 		string _SettingPortString = Localization.Loc.Default;
+		#region Port Settings
+		[ObservableProperty]
+		int _SettingBaudRate = 115200;
+		[ObservableProperty]
+		int _SettingDataBits = 8;
+		[ObservableProperty]
+		StopBits _SettingStopBitsOrdinal = StopBits.None;
+		[ObservableProperty]
+		Parity _SettingParityOrdinal = Parity.None;
+		#endregion
+		#endregion
 
 		public COMDeviceModel? ListSelectedCOM { get; set; }
 
@@ -94,6 +106,7 @@ namespace VCOM_WinUI.ViewModel
 							DataBits = 8,
 							StopBits = StopBits.One,
 							Parity = Parity.None,
+							Handshake = Handshake.None,
 						};
 						activeSPs.Add(serialPort);
 					}
@@ -113,7 +126,10 @@ namespace VCOM_WinUI.ViewModel
 		public void SelectedCOMChanged()
 		{
 			if (ListSelectedCOM is not null)
+			{
 				IsCurrentPortOpen = ListSelectedCOM.IsOpen;
+				SettingPortString = ListSelectedCOM.COMNumStr;
+			}
 		}
 
 		public MainCOMVM()

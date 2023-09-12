@@ -115,7 +115,9 @@ namespace VCOM_WinUI.ViewModel
 				else
 				{   //TODO: Close Port
 					serialPort = activeSPs.First(sp => sp.PortName == portName);
-					serialPort.Close();
+					if (serialPort.IsOpen)
+						serialPort.Close();
+					//TODO: Add logging.
 				}
 				IsCurrentPortOpen = ListSelectedCOM.IsOpen = serialPort.IsOpen;     //Update Visuals
 			}

@@ -148,4 +148,10 @@
   <data name="None" xml:space="preserve">
     <value>None</value>
   </data>
+  <data name="Send" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="Receive" xml:space="preserve">
+    <value>Receive</value>
+  </data>
 </root>

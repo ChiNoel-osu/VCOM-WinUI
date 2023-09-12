@@ -196,6 +196,24 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Receive.
+        /// </summary>
+        internal static string Receive {
+            get {
+                return ResourceManager.GetString("Receive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send.
+        /// </summary>
+        internal static string Send {
+            get {
+                return ResourceManager.GetString("Send", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         internal static string Settings {

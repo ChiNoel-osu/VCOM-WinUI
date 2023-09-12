@@ -266,7 +266,7 @@
 					   Style="{StaticResource SubtitleTextBlockStyle}"
 					   VerticalAlignment="Center"
 					   Margin="5,0,0,5"
-					   Text="Receiving" />
+					   Text="{x:Bind loc:Loc.Receive}" />
 			<TextBox Grid.Row="1"
 					 CornerRadius="8"
 					 FontFamily="Consolas"
@@ -285,7 +285,7 @@
 					   Style="{StaticResource SubtitleTextBlockStyle}"
 					   VerticalAlignment="Center"
 					   Margin="5,0,0,5"
-					   Text="Sending" />
+					   Text="{x:Bind loc:Loc.Send}" />
 		</Grid>
 		<!--#endregion-->
 	</Grid>

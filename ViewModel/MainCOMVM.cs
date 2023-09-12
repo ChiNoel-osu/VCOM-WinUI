@@ -92,34 +92,26 @@ namespace VCOM_WinUI.ViewModel
 			{
 				SerialPort serialPort;
 				if (ListSelectedCOM.IsOpen = !ListSelectedCOM.IsOpen)     //Toggle Port
-				{   //TODO: Open Port
+				{
 					if (activeSPs.Any(sp => sp.PortName == portName))
 					{   //Port already exists (Opened before)
 						serialPort = activeSPs.First(sp => sp.PortName == portName);
 					}
 					else
 					{   //Port does not exist
-						serialPort = new SerialPort()
-						{   //TODO: Initiate SP with default PARAM.
-							PortName = portName,
-							BaudRate = 9600,
-							DataBits = 8,
-							StopBits = StopBits.One,
-							Parity = Parity.None,
-							Handshake = Handshake.None,
-						};
+						serialPort = NewSP(portName, 9600, 8, StopBits.One, Parity.None);
 						activeSPs.Add(serialPort);
 					}
 					serialPort.Open();
 				}
 				else
-				{   //TODO: Close Port
+				{   //TODO: Close Port, to be tested.
 					serialPort = activeSPs.First(sp => sp.PortName == portName);
 					if (serialPort.IsOpen)
 						serialPort.Close();
 					//TODO: Add logging.
 				}
-				IsCurrentPortOpen = ListSelectedCOM.IsOpen = serialPort.IsOpen;     //Update Visuals
+				IsCurrentPortOpen = ListSelectedCOM.IsOpen = serialPort.IsOpen; //Update Visuals
 			}
 			else
 				IsCurrentPortOpen = false;
@@ -131,8 +123,28 @@ namespace VCOM_WinUI.ViewModel
 			{
 				IsCurrentPortOpen = ListSelectedCOM.IsOpen;
 				SettingPortString = ListSelectedCOM.COMNumStr;
+				SerialPort serialPort;
+				if (activeSPs.Any(sp => sp.PortName == ListSelectedCOM.COMNumStr))
+				{   //Port exists.
+					serialPort = activeSPs.First(sp => sp.PortName == ListSelectedCOM.COMNumStr);
+				}
+				else
+				{   //Port doesn't exist.
+					serialPort = serialPort = NewSP(ListSelectedCOM.COMNumStr, 9600, 8, StopBits.One, Parity.None);
+					activeSPs.Add(serialPort);
+				}
 			}
 		}
+
+		public static SerialPort NewSP(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity) => new SerialPort()
+		{
+			PortName = portName,
+			BaudRate = baudRate,
+			DataBits = dataBits,
+			StopBits = stopBits,
+			Parity = parity,
+			Handshake = Handshake.None,
+		};
 
 		public MainCOMVM()
 		{

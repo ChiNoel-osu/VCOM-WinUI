@@ -9,6 +9,7 @@
 	  xmlns:converter="using:VCOM_WinUI.Converters"
 	  d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
 	  xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+	  xmlns:winui="using:CommunityToolkit.WinUI"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  mc:Ignorable="d">
@@ -16,277 +17,316 @@
 		<converter:Enum2IntConverter x:Key="Enum2IntConverter" />
 	</Page.Resources>
 	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto"
-							  MinWidth="210" />
-			<ColumnDefinition Width="2*" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<!--#region Grid(0,0)-->
-		<Border Grid.Column="0"
-				Grid.Row="0"
-				BorderBrush="Gray"
-				BorderThickness="2"
-				Margin="5"
-				CornerRadius="8">
-			<controls:DockPanel>
-				<TextBlock controls:DockPanel.Dock="Top"
-						   HorizontalAlignment="Center"
-						   Margin="20,10"
-						   Text="{x:Bind loc:Loc.COMList}"
-						   Style="{StaticResource SubtitleTextBlockStyle}" />
-				<ListView controls:DockPanel.Dock="Bottom"
-						  SelectionChanged="COMDeviceList_SelectionChanged"
-						  x:Name="COMDeviceList"
-						  SelectedItem="{Binding MainCOM.ListSelectedCOM, Mode=TwoWay}"
-						  SelectionMode="Single"
-						  ItemsSource="{Binding MainCOM.COMList, Mode=OneWay}"
-						  CanDragItems="True"
-						  CanReorderItems="True"
-						  AllowDrop="True">
-					<ListView.ItemTemplate>
-						<DataTemplate>
-							<!--To make the VisualStateManager work, the template must be wrapped in a UserControl.-->
-							<!--The VisualStateManager.VisualStateGroups should be defined-->
-							<!--in the one and only control of the template, in this case, the StackPanel.-->
-							<UserControl DoubleTapped="COMDevice_DoubleTapped"
-										 Tag="{Binding COMNumStr}">
-								<StackPanel controls:DockPanel.Dock="Left"
-											VerticalAlignment="Center"
-											Margin="0,5"
-											Spacing="5">
-									<VisualStateManager.VisualStateGroups>
-										<VisualStateGroup>
-											<VisualState>
-												<VisualState.StateTriggers>
-													<triggers:IsEqualStateTrigger Value="{Binding IsOpen, Mode=OneWay}"
-																				  To="True" />
-												</VisualState.StateTriggers>
-												<VisualState.Setters>
-													<Setter Target="SPStateIndicator.Fill"
-															Value="Lime" />
-												</VisualState.Setters>
-											</VisualState>
-											<VisualState>
-												<VisualState.StateTriggers>
-													<triggers:IsEqualStateTrigger Value="{Binding IsOpen, Mode=OneWay}"
-																				  To="False" />
-												</VisualState.StateTriggers>
-												<VisualState.Setters>
-													<Setter Target="SPStateIndicator.Fill"
-															Value="Gray" />
-												</VisualState.Setters>
-											</VisualState>
-										</VisualStateGroup>
-									</VisualStateManager.VisualStateGroups>
-									<controls:DockPanel>
-										<Rectangle x:Name="SPStateIndicator"
-												   controls:DockPanel.Dock="Right"
-												   Height="5"
-												   Width="20"
-												   RadiusX="2"
-												   RadiusY="10" />
-										<TextBlock controls:DockPanel.Dock="Left"
-												   Style="{StaticResource BodyTextBlockStyle}"
-												   Text="{Binding COMNumStr}" />
-									</controls:DockPanel>
-									<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
-											   Text="{Binding COMDeviceName}"
-											   Margin="0,-4,0,2" />
-								</StackPanel>
-							</UserControl>
-						</DataTemplate>
-					</ListView.ItemTemplate>
-				</ListView>
-			</controls:DockPanel>
-		</Border>
-		<controls:DockPanel VerticalAlignment="Bottom"
-							HorizontalAlignment="Stretch">
-			<!--Refresh-->
-			<Button controls:DockPanel.Dock="Left"
-					Grid.Column="0"
+		<!--<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup>
+				<VisualState>
+					<VisualState.StateTriggers>
+						<triggers:IsEqualStateTrigger Value="{Binding MainCOM.UnableToOpenPort, Mode=OneWay}"
+													  To="True" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="MyInfoBar.IsOpen"
+								Value="True" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState>
+					<VisualState.StateTriggers>
+						<triggers:IsEqualStateTrigger Value="{Binding MainCOM.UnableToOpenPort, Mode=OneWay}"
+													  To="False" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="MyInfoBar.IsOpen"
+								Value="False" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>-->
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"
+								  MinWidth="210" />
+				<ColumnDefinition Width="2*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<!--#region Grid(0,0)-->
+			<Border Grid.Column="0"
 					Grid.Row="0"
-					Height="40"
-					Width="40"
-					Margin="15"
-					Padding="0"
-					CornerRadius="8"
-					IsEnabled="{Binding MainCOM.IsNotRefreshing, Mode=OneWay}"
-					Command="{Binding MainCOM.RefreshCOMListCommand}">
-				<Button.Content>
-					<FontIcon Glyph="&#xE72C;" />
-				</Button.Content>
-			</Button>
-			<!--Port Settings-->
-			<Button controls:DockPanel.Dock="Right"
-					Grid.Column="0"
-					Grid.Row="0"
-					Height="40"
-					Width="40"
-					Margin="15"
-					Padding="0"
+					BorderBrush="Gray"
+					BorderThickness="2"
+					Margin="5"
 					CornerRadius="8">
-				<Button.Content>
-					<FontIcon Glyph="&#xE9E9;" />
-				</Button.Content>
-				<Button.Flyout>
-					<Flyout Placement="RightEdgeAlignedBottom"
-							ShowMode="Standard"
-							AllowFocusOnInteraction="True">
-						<StackPanel Width="180"
-									Spacing="5">
-							<StackPanel Orientation="Horizontal"
-										Padding="0,0,0,10"
-										Spacing="8">
-								<TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
-										   VerticalAlignment="Center"
-										   Text="{x:Bind loc:Loc.PortSettings}" />
-								<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
-										   VerticalAlignment="Bottom"
-										   Text="{Binding MainCOM.SettingPortString, Mode=OneWay}" />
+				<controls:DockPanel>
+					<TextBlock controls:DockPanel.Dock="Top"
+							   HorizontalAlignment="Center"
+							   Margin="20,10"
+							   Text="{x:Bind loc:Loc.COMList}"
+							   Style="{StaticResource SubtitleTextBlockStyle}" />
+					<ListView controls:DockPanel.Dock="Bottom"
+							  SelectionChanged="COMDeviceList_SelectionChanged"
+							  x:Name="COMDeviceList"
+							  SelectedItem="{Binding MainCOM.ListSelectedCOM, Mode=TwoWay}"
+							  SelectionMode="Single"
+							  ItemsSource="{Binding MainCOM.COMList, Mode=OneWay}"
+							  CanDragItems="True"
+							  CanReorderItems="True"
+							  AllowDrop="True">
+						<ListView.ItemTemplate>
+							<DataTemplate>
+								<!--To make the VisualStateManager work, the template must be wrapped in a UserControl.-->
+								<!--The VisualStateManager.VisualStateGroups should be defined-->
+								<!--in the one and only control of the template, in this case, the StackPanel.-->
+								<UserControl DoubleTapped="COMDevice_DoubleTapped"
+											 Tag="{Binding COMNumStr}">
+									<StackPanel controls:DockPanel.Dock="Left"
+												VerticalAlignment="Center"
+												Margin="0,5"
+												Spacing="5">
+										<VisualStateManager.VisualStateGroups>
+											<VisualStateGroup>
+												<VisualState>
+													<VisualState.StateTriggers>
+														<triggers:IsEqualStateTrigger Value="{Binding IsOpen, Mode=OneWay}"
+																					  To="True" />
+													</VisualState.StateTriggers>
+													<VisualState.Setters>
+														<Setter Target="SPStateIndicator.Fill"
+																Value="Lime" />
+													</VisualState.Setters>
+												</VisualState>
+												<VisualState>
+													<VisualState.StateTriggers>
+														<triggers:IsEqualStateTrigger Value="{Binding IsOpen, Mode=OneWay}"
+																					  To="False" />
+													</VisualState.StateTriggers>
+													<VisualState.Setters>
+														<Setter Target="SPStateIndicator.Fill"
+																Value="Gray" />
+													</VisualState.Setters>
+												</VisualState>
+											</VisualStateGroup>
+										</VisualStateManager.VisualStateGroups>
+										<controls:DockPanel>
+											<Rectangle x:Name="SPStateIndicator"
+													   controls:DockPanel.Dock="Right"
+													   Height="5"
+													   Width="20"
+													   RadiusX="2"
+													   RadiusY="10" />
+											<TextBlock controls:DockPanel.Dock="Left"
+													   Style="{StaticResource BodyTextBlockStyle}"
+													   Text="{Binding COMNumStr}" />
+										</controls:DockPanel>
+										<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+												   Text="{Binding COMDeviceName}"
+												   Margin="0,-4,0,2" />
+									</StackPanel>
+								</UserControl>
+							</DataTemplate>
+						</ListView.ItemTemplate>
+					</ListView>
+				</controls:DockPanel>
+			</Border>
+			<controls:DockPanel VerticalAlignment="Bottom"
+								HorizontalAlignment="Stretch">
+				<!--Refresh-->
+				<Button controls:DockPanel.Dock="Left"
+						Grid.Column="0"
+						Grid.Row="0"
+						Height="40"
+						Width="40"
+						Margin="15"
+						Padding="0"
+						CornerRadius="8"
+						IsEnabled="{Binding MainCOM.IsNotRefreshing, Mode=OneWay}"
+						Command="{Binding MainCOM.RefreshCOMListCommand}">
+					<Button.Content>
+						<FontIcon Glyph="&#xE72C;" />
+					</Button.Content>
+				</Button>
+				<!--Port Settings-->
+				<Button controls:DockPanel.Dock="Right"
+						Grid.Column="0"
+						Grid.Row="0"
+						Height="40"
+						Width="40"
+						Margin="15"
+						Padding="0"
+						CornerRadius="8">
+					<Button.Content>
+						<FontIcon Glyph="&#xE9E9;" />
+					</Button.Content>
+					<Button.Flyout>
+						<Flyout Placement="RightEdgeAlignedBottom"
+								ShowMode="Standard"
+								AllowFocusOnInteraction="True">
+							<StackPanel Width="180"
+										Spacing="5">
+								<StackPanel Orientation="Horizontal"
+											Padding="0,0,0,10"
+											Spacing="8">
+									<TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
+											   VerticalAlignment="Center"
+											   Text="{x:Bind loc:Loc.PortSettings}" />
+									<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+											   VerticalAlignment="Bottom"
+											   Text="{Binding MainCOM.SettingPortString, Mode=OneWay}" />
+								</StackPanel>
+								<Grid>
+									<TextBlock HorizontalAlignment="Left"
+											   VerticalAlignment="Center"
+											   Text="{x:Bind loc:Loc.Baudrate}"
+											   Style="{StaticResource BodyTextBlockStyle}" />
+									<ComboBox HorizontalAlignment="Right"
+											  SelectedItem="{Binding MainCOM.SettingBaudRate, Mode=TwoWay}">
+										<ComboBox.Items>
+											<x:Int32>4800</x:Int32>
+											<x:Int32>9600</x:Int32>
+											<x:Int32>19200</x:Int32>
+											<x:Int32>28800</x:Int32>
+											<x:Int32>38400</x:Int32>
+											<x:Int32>57600</x:Int32>
+											<x:Int32>115200</x:Int32>
+											<x:Int32>921600</x:Int32>
+										</ComboBox.Items>
+									</ComboBox>
+								</Grid>
+								<Grid>
+									<TextBlock HorizontalAlignment="Left"
+											   VerticalAlignment="Center"
+											   Text="{x:Bind loc:Loc.Databits}"
+											   Style="{StaticResource BodyTextBlockStyle}" />
+									<NumberBox HorizontalAlignment="Right"
+											   VerticalAlignment="Center"
+											   Value="{Binding MainCOM.SettingDataBits, Mode=TwoWay}"
+											   Minimum="1"
+											   SpinButtonPlacementMode="Compact" />
+								</Grid>
+								<Grid>
+									<TextBlock HorizontalAlignment="Left"
+											   VerticalAlignment="Center"
+											   Text="{x:Bind loc:Loc.Stopbits}"
+											   Style="{StaticResource BodyTextBlockStyle}" />
+									<ComboBox HorizontalAlignment="Right"
+											  SelectedIndex="{Binding MainCOM.SettingStopBitsOrdinal, Mode=TwoWay, Converter={StaticResource Enum2IntConverter}}">
+										<ComboBox.Items>
+											<x:Double>1</x:Double>
+											<x:Double>1.5</x:Double>
+											<x:Double>2</x:Double>
+										</ComboBox.Items>
+									</ComboBox>
+								</Grid>
+								<Grid>
+									<TextBlock HorizontalAlignment="Left"
+											   VerticalAlignment="Center"
+											   Text="{x:Bind loc:Loc.Parity}"
+											   Style="{StaticResource BodyTextBlockStyle}" />
+									<ComboBox HorizontalAlignment="Right"
+											  SelectedIndex="{Binding MainCOM.SettingParityOrdinal, Mode=TwoWay, Converter={StaticResource Enum2IntConverter}}">
+										<ComboBox.Items>
+											<x:String>None</x:String>
+											<x:String>Odd</x:String>
+											<x:String>Even</x:String>
+											<x:String>Mark</x:String>
+											<x:String>Space</x:String>
+										</ComboBox.Items>
+									</ComboBox>
+								</Grid>
+								<Grid>
+									<TextBlock HorizontalAlignment="Left"
+											   VerticalAlignment="Center"
+											   Text="{x:Bind loc:Loc.FlowCtrl}"
+											   Style="{StaticResource BodyTextBlockStyle}" />
+									<TextBlock HorizontalAlignment="Right"
+											   VerticalAlignment="Center"
+											   Text="{x:Bind loc:Loc.None}"
+											   Style="{StaticResource BodyStrongTextBlockStyle}" />
+								</Grid>
+								<Grid>
+									<TextBlock HorizontalAlignment="Left"
+											   VerticalAlignment="Center"
+											   Text="{x:Bind loc:Loc.HandShake}"
+											   Style="{StaticResource BodyTextBlockStyle}" />
+									<TextBlock HorizontalAlignment="Right"
+											   VerticalAlignment="Center"
+											   Text="{x:Bind loc:Loc.None}"
+											   Style="{StaticResource BodyStrongTextBlockStyle}" />
+								</Grid>
 							</StackPanel>
-							<Grid>
-								<TextBlock HorizontalAlignment="Left"
-										   VerticalAlignment="Center"
-										   Text="{x:Bind loc:Loc.Baudrate}"
-										   Style="{StaticResource BodyTextBlockStyle}" />
-								<ComboBox HorizontalAlignment="Right"
-										  SelectedItem="{Binding MainCOM.SettingBaudRate, Mode=TwoWay}">
-									<ComboBox.Items>
-										<x:Int32>4800</x:Int32>
-										<x:Int32>9600</x:Int32>
-										<x:Int32>19200</x:Int32>
-										<x:Int32>28800</x:Int32>
-										<x:Int32>38400</x:Int32>
-										<x:Int32>57600</x:Int32>
-										<x:Int32>115200</x:Int32>
-										<x:Int32>921600</x:Int32>
-									</ComboBox.Items>
-								</ComboBox>
-							</Grid>
-							<Grid>
-								<TextBlock HorizontalAlignment="Left"
-										   VerticalAlignment="Center"
-										   Text="{x:Bind loc:Loc.Databits}"
-										   Style="{StaticResource BodyTextBlockStyle}" />
-								<NumberBox HorizontalAlignment="Right"
-										   VerticalAlignment="Center"
-										   Value="{Binding MainCOM.SettingDataBits, Mode=TwoWay}"
-										   Minimum="1"
-										   SpinButtonPlacementMode="Compact" />
-							</Grid>
-							<Grid>
-								<TextBlock HorizontalAlignment="Left"
-										   VerticalAlignment="Center"
-										   Text="{x:Bind loc:Loc.Stopbits}"
-										   Style="{StaticResource BodyTextBlockStyle}" />
-								<ComboBox HorizontalAlignment="Right"
-										  SelectedIndex="{Binding MainCOM.SettingStopBitsOrdinal, Mode=TwoWay, Converter={StaticResource Enum2IntConverter}}">
-									<ComboBox.Items>
-										<x:Double>1</x:Double>
-										<x:Double>1.5</x:Double>
-										<x:Double>2</x:Double>
-									</ComboBox.Items>
-								</ComboBox>
-							</Grid>
-							<Grid>
-								<TextBlock HorizontalAlignment="Left"
-										   VerticalAlignment="Center"
-										   Text="{x:Bind loc:Loc.Parity}"
-										   Style="{StaticResource BodyTextBlockStyle}" />
-								<ComboBox HorizontalAlignment="Right"
-										  SelectedIndex="{Binding MainCOM.SettingParityOrdinal, Mode=TwoWay, Converter={StaticResource Enum2IntConverter}}">
-									<ComboBox.Items>
-										<x:String>None</x:String>
-										<x:String>Odd</x:String>
-										<x:String>Even</x:String>
-										<x:String>Mark</x:String>
-										<x:String>Space</x:String>
-									</ComboBox.Items>
-								</ComboBox>
-							</Grid>
-							<Grid>
-								<TextBlock HorizontalAlignment="Left"
-										   VerticalAlignment="Center"
-										   Text="{x:Bind loc:Loc.FlowCtrl}"
-										   Style="{StaticResource BodyTextBlockStyle}" />
-								<TextBlock HorizontalAlignment="Right"
-										   VerticalAlignment="Center"
-										   Text="{x:Bind loc:Loc.None}"
-										   Style="{StaticResource BodyStrongTextBlockStyle}" />
-							</Grid>
-							<Grid>
-								<TextBlock HorizontalAlignment="Left"
-										   VerticalAlignment="Center"
-										   Text="{x:Bind loc:Loc.HandShake}"
-										   Style="{StaticResource BodyTextBlockStyle}" />
-								<TextBlock HorizontalAlignment="Right"
-										   VerticalAlignment="Center"
-										   Text="{x:Bind loc:Loc.None}"
-										   Style="{StaticResource BodyStrongTextBlockStyle}" />
-							</Grid>
-						</StackPanel>
-					</Flyout>
-				</Button.Flyout>
-			</Button>
-			<!--Toggle Port-->
-			<ToggleButton controls:DockPanel.Dock="Left"
-						  Grid.Column="0"
-						  Grid.Row="0"
-						  Height="40"
-						  HorizontalAlignment="Stretch"
-						  Margin="-8"
-						  Padding="0,-1,0,0"
-						  CornerRadius="8"
-						  IsChecked="{Binding MainCOM.IsCurrentPortOpen, Mode=TwoWay}"
-						  Command="{Binding MainCOM.TogglePortCommand}"
-						  CommandParameter="{Binding ElementName=COMDeviceList, Path=SelectedItem.COMNumStr}" />
-		</controls:DockPanel>
-		<!--This TextBlock will be displayed when there's nothing in the ListView.-->
-		<!--Binding a boolean value to Visibility property works, why?-->
-		<!--It's very convenient nonetheless-->
-		<TextBlock Grid.Column="0"
-				   Grid.Row="0"
-				   Style="{StaticResource CaptionTextBlockStyle}"
-				   Foreground="{ThemeResource TextFillColorSecondary}"
-				   Text="{x:Bind loc:Loc.NOCOMText}"
-				   Visibility="{Binding MainCOM.NoCOM, Mode=OneWay}"
-				   HorizontalAlignment="Center"
-				   VerticalAlignment="Center" />
-		<!--#endregion-->
-		<!--#region Grid(0,1)-->
-		<Grid Grid.Row="0"
-			  Grid.Column="1"
-			  Margin="0,5,0,6">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="35" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<TextBlock Grid.Row="0"
-					   Style="{StaticResource SubtitleTextBlockStyle}"
-					   VerticalAlignment="Center"
-					   Margin="5,0,0,5"
-					   Text="{x:Bind loc:Loc.Receive}" />
-			<TextBox Grid.Row="1"
-					 CornerRadius="8"
-					 FontFamily="Consolas"
-					 TextWrapping="Wrap" />
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+				<!--Toggle Port-->
+				<ToggleButton controls:DockPanel.Dock="Left"
+							  Grid.Column="0"
+							  Grid.Row="0"
+							  Height="40"
+							  HorizontalAlignment="Stretch"
+							  Margin="-8"
+							  Padding="0,-1,0,0"
+							  CornerRadius="8"
+							  IsChecked="{Binding MainCOM.IsCurrentPortOpen, Mode=TwoWay}"
+							  Command="{Binding MainCOM.TogglePortCommand}"
+							  CommandParameter="{Binding ElementName=COMDeviceList, Path=SelectedItem.COMNumStr}" />
+			</controls:DockPanel>
+			<!--This TextBlock will be displayed when there's nothing in the ListView.-->
+			<!--Binding a boolean value to Visibility property works, why?-->
+			<!--It's very convenient nonetheless-->
+			<TextBlock Grid.Column="0"
+					   Grid.Row="0"
+					   Style="{StaticResource CaptionTextBlockStyle}"
+					   Foreground="{ThemeResource TextFillColorSecondary}"
+					   Text="{x:Bind loc:Loc.NOCOMText}"
+					   Visibility="{Binding MainCOM.NoCOM, Mode=OneWay}"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center" />
+			<!--#endregion-->
+			<!--#region Grid(0,1)-->
+			<Grid Grid.Row="0"
+				  Grid.Column="1"
+				  Margin="0,5,0,6">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="35" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<TextBlock Grid.Row="0"
+						   Style="{StaticResource SubtitleTextBlockStyle}"
+						   VerticalAlignment="Center"
+						   Margin="5,0,0,5"
+						   Text="{x:Bind loc:Loc.Receive}" />
+				<TextBox Grid.Row="1"
+						 CornerRadius="8"
+						 FontFamily="Consolas"
+						 TextWrapping="Wrap" />
+			</Grid>
+			<!--#endregion-->
+			<!--#region Grid(0,2)-->
+			<Grid Grid.Row="0"
+				  Grid.Column="2"
+				  Margin="5">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="35" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<TextBlock Grid.Row="0"
+						   Style="{StaticResource SubtitleTextBlockStyle}"
+						   VerticalAlignment="Center"
+						   Margin="5,0,0,5"
+						   Text="{x:Bind loc:Loc.Send}" />
+			</Grid>
+			<!--#endregion-->
 		</Grid>
-		<!--#endregion-->
-		<!--#region Grid(0,2)-->
-		<Grid Grid.Row="0"
-			  Grid.Column="2"
-			  Margin="5">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="35" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<TextBlock Grid.Row="0"
-					   Style="{StaticResource SubtitleTextBlockStyle}"
-					   VerticalAlignment="Center"
-					   Margin="5,0,0,5"
-					   Text="{x:Bind loc:Loc.Send}" />
-		</Grid>
-		<!--#endregion-->
+		<InfoBar x:Name="MyInfoBar"
+				 Severity="Error"
+				 IsEnabled="{Binding MainCOM.UnableToOpenPort, Mode=OneWay}"
+				 IsEnabledChanged="MyInfoBar_IsEnabledChanged"
+				 HorizontalAlignment="Right"
+				 VerticalAlignment="Bottom"
+				 Margin="0,0,10,-50"
+				 Title="{x:Bind loc:Loc.SPOpenFailTitle}"
+				 Message="{x:Bind loc:Loc.SPOpenFailMsg}">
+			<InfoBar.TranslationTransition>
+				<Vector3Transition Duration="0:0:0.5" />
+			</InfoBar.TranslationTransition>
+		</InfoBar>
 	</Grid>
 </Page>

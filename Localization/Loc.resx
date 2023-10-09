@@ -154,4 +154,10 @@
   <data name="Receive" xml:space="preserve">
     <value>Receive</value>
   </data>
+  <data name="SPOpenFailTitle" xml:space="preserve">
+    <value>Unable to open serial port!</value>
+  </data>
+  <data name="SPOpenFailMsg" xml:space="preserve">
+    <value>Make sure it's not in use.</value>
+  </data>
 </root>

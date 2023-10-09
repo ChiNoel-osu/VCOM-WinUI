@@ -154,4 +154,10 @@
   <data name="Send" xml:space="preserve">
     <value>发送</value>
   </data>
+  <data name="SPOpenFailTitle" xml:space="preserve">
+    <value>无法打开串口!</value>
+  </data>
+  <data name="SPOpenFailMsg" xml:space="preserve">
+    <value>请确保其不被占用.</value>
+  </data>
 </root>

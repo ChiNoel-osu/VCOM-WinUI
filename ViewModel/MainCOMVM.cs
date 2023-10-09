@@ -1,11 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Dispatching;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
 using System.Management;
+using System.Numerics;
 using System.Threading.Tasks;
 using VCOM_WinUI.Model;
 
@@ -26,6 +28,8 @@ namespace VCOM_WinUI.ViewModel
 		bool _IsNotRefreshing = true;
 		[ObservableProperty]
 		string _SettingPortString = Localization.Loc.Default;
+		[ObservableProperty]
+		bool _UnableToOpenPort = false; //For InfoBar.IsOpen
 		#region Port Settings
 		[ObservableProperty]
 		int _SettingBaudRate = 115200;
@@ -94,15 +98,23 @@ namespace VCOM_WinUI.ViewModel
 				if (ListSelectedCOM.IsOpen = !ListSelectedCOM.IsOpen)     //Toggle Port
 				{
 					if (activeSPs.Any(sp => sp.PortName == portName))
-					{   //Port already exists (Opened before)
+					{   //Port already exists in list (Opened before)
 						serialPort = activeSPs.First(sp => sp.PortName == portName);
 					}
 					else
-					{   //Port does not exist
+					{   //Port does not exist in list
 						serialPort = NewSP(portName, 9600, 8, StopBits.One, Parity.None);
 						activeSPs.Add(serialPort);
 					}
-					serialPort.Open();
+					try
+					{
+						UnableToOpenPort = false;
+						serialPort.Open();
+					}
+					catch (UnauthorizedAccessException)
+					{
+						UnableToOpenPort = true;
+					}
 				}
 				else
 				{   //TODO: Close Port, to be tested.

@@ -33,8 +33,8 @@ namespace VCOM_WinUI.View
 		{   //Implicit Animation
 			if ((bool)e.NewValue)
 			{   //Unable to open port.
-				((InfoBar)sender).IsOpen = true;
-				((InfoBar)sender).Translation = new System.Numerics.Vector3(0, -60, 0);
+				MyInfoBar.IsOpen = true;
+				MyInfoBar.Translation = new System.Numerics.Vector3(0, -60, 0);
 				if (!isInfoBarVisible)
 				{
 					isInfoBarVisible = true;
@@ -45,8 +45,8 @@ namespace VCOM_WinUI.View
 			}
 			else
 			{
-				((InfoBar)sender).Translation = System.Numerics.Vector3.Zero;
-				((InfoBar)sender).IsOpen = false;
+				MyInfoBar.Translation = System.Numerics.Vector3.Zero;
+				MyInfoBar.IsOpen = false;
 			}
 		}
 

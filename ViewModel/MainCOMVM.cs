@@ -7,7 +7,8 @@ using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Linq;
 using System.Management;
-using System.Numerics;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using VCOM_WinUI.Model;
 
@@ -30,6 +31,8 @@ namespace VCOM_WinUI.ViewModel
 		string _SettingPortString = Localization.Loc.Default;
 		[ObservableProperty]
 		bool _UnableToOpenPort = false; //For InfoBar.IsOpen
+		[ObservableProperty]
+		string _ReceiveString = string.Empty;
 		#region Port Settings
 		[ObservableProperty]
 		int _SettingBaudRate = 115200;
@@ -111,7 +114,7 @@ namespace VCOM_WinUI.ViewModel
 						UnableToOpenPort = false;
 						serialPort.Open();
 					}
-					catch (UnauthorizedAccessException)
+					catch (Exception)
 					{
 						UnableToOpenPort = true;
 					}
@@ -148,19 +151,37 @@ namespace VCOM_WinUI.ViewModel
 			}
 		}
 
-		public static SerialPort NewSP(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity) => new SerialPort()
+		public SerialPort NewSP(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity)
 		{
-			PortName = portName,
-			BaudRate = baudRate,
-			DataBits = dataBits,
-			StopBits = stopBits,
-			Parity = parity,
-			Handshake = Handshake.None,
-		};
+			SerialPort sp = new SerialPort()
+			{
+				PortName = portName,
+				BaudRate = baudRate,
+				DataBits = dataBits,
+				StopBits = stopBits,
+				Parity = parity,
+				Handshake = Handshake.None,
+			};
+			return sp;
+		}
 
+		StringBuilder spSB = new StringBuilder();
 		public MainCOMVM()
 		{
 			RefreshCOMList();
+			SerialPort serialPort = new SerialPort("COM22", 115200, Parity.None, 8, StopBits.One);
+			serialPort.Open();
+			Task.Run(() =>
+			{
+				while (true)
+				{
+					dispatcher.TryEnqueue(() =>
+					{
+						ReceiveString += serialPort.ReadExisting();
+					});
+					Thread.Sleep(50);
+				}
+			});
 		}
 	}
 }

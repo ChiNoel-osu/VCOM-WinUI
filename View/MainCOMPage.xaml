@@ -294,6 +294,9 @@
 						   Margin="5,0,0,5"
 						   Text="{x:Bind loc:Loc.Receive}" />
 				<TextBox Grid.Row="1"
+						 IsReadOnly="True"
+						 ScrollViewer.VerticalScrollBarVisibility="Visible"
+						 Text="{Binding MainCOM.ReceiveString, Mode=OneWay}"
 						 CornerRadius="8"
 						 FontFamily="Consolas"
 						 TextWrapping="Wrap" />

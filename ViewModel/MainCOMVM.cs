@@ -161,7 +161,6 @@ namespace VCOM_WinUI.ViewModel
 			Handshake = Handshake.None,
 		};
 
-		StringBuilder spSB = new StringBuilder();
 		public MainCOMVM()
 		{
 			RefreshCOMList();

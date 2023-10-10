@@ -153,13 +153,17 @@ namespace VCOM_WinUI.ViewModel
 
 		public SerialPort NewSP(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity) => new SerialPort()
 		{
-			PortName = portName,
-			BaudRate = baudRate,
-			DataBits = dataBits,
-			StopBits = stopBits,
-			Parity = parity,
-			Handshake = Handshake.None,
-		};
+			SerialPort sp = new SerialPort()
+			{
+				PortName = portName,
+				BaudRate = baudRate,
+				DataBits = dataBits,
+				StopBits = stopBits,
+				Parity = parity,
+				Handshake = Handshake.None,
+			};
+			return sp;
+		}
 
 		StringBuilder spSB = new StringBuilder();
 		public MainCOMVM()

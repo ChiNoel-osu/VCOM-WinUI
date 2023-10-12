@@ -296,7 +296,7 @@
 				<TextBox Grid.Row="1"
 						 IsReadOnly="True"
 						 ScrollViewer.VerticalScrollBarVisibility="Visible"
-						 Text="{Binding MainCOM.ReceiveString, Mode=OneWay}"
+						 Text="{Binding MainCOM.ReceiveString, Mode=TwoWay}"
 						 CornerRadius="8"
 						 FontFamily="Consolas"
 						 TextWrapping="Wrap" />

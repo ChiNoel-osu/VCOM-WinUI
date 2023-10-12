@@ -4,6 +4,8 @@ using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Management;
@@ -11,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VCOM_WinUI.Model;
+using Windows.Storage.Streams;
 
 namespace VCOM_WinUI.ViewModel
 {
@@ -151,7 +154,7 @@ namespace VCOM_WinUI.ViewModel
 			}
 		}
 
-		public SerialPort NewSP(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity) => new SerialPort()
+		public static SerialPort NewSP(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity) => new SerialPort()
 		{
 			PortName = portName,
 			BaudRate = baudRate,
@@ -164,17 +167,25 @@ namespace VCOM_WinUI.ViewModel
 		public MainCOMVM()
 		{
 			RefreshCOMList();
-			SerialPort serialPort = new SerialPort("COM22", 115200, Parity.None, 8, StopBits.One);
+			SerialPort serialPort = new SerialPort("COM92", 115200, Parity.None, 8, StopBits.One);
 			serialPort.Open();
+			StringBuilder stringBuilder = new StringBuilder();
+			byte[] rBuffer = new byte[1];
+			char charBuffer;
+			string tempStr;
+			object lockObj = new object();
 			Task.Run(() =>
 			{
 				while (true)
 				{
+					serialPort.Read(rBuffer, 0, 1);
+					charBuffer = Convert.ToChar(rBuffer[0]);
+					if (charBuffer == '\0') continue;
+					tempStr = stringBuilder.Append(charBuffer).ToString();
 					dispatcher.TryEnqueue(() =>
 					{
-						ReceiveString += serialPort.ReadExisting();
+						ReceiveString = tempStr;
 					});
-					Thread.Sleep(50);
 				}
 			});
 		}

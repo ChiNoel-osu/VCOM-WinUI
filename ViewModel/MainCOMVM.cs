@@ -4,16 +4,12 @@ using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Management;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using VCOM_WinUI.Model;
-using Windows.Storage.Streams;
 
 namespace VCOM_WinUI.ViewModel
 {
@@ -53,6 +49,8 @@ namespace VCOM_WinUI.ViewModel
 		List<SerialPort> activeSPs = new List<SerialPort>();
 
 		Dictionary<string, string> portNumNameDict = new Dictionary<string, string>();
+		Dictionary<SerialPort, string> spMsgDict = new Dictionary<SerialPort, string>();
+
 
 		[RelayCommand]
 		public void RefreshCOMList()
@@ -108,22 +106,24 @@ namespace VCOM_WinUI.ViewModel
 						serialPort = activeSPs.First(sp => sp.PortName == portName);
 					}
 					else
-					{   //Port does not exist in list
-						serialPort = NewSP(portName, 9600, 8, StopBits.One, Parity.None);
+					{   //Port does not exist in list (shouldn't happen bc it's added after user selected a port)
+						serialPort = NewSP(portName, 115200, 8, StopBits.One, Parity.None);
 						activeSPs.Add(serialPort);
+						spMsgDict.Add(serialPort, string.Empty);
 					}
 					try
-					{
+					{   //Open the port.
 						UnableToOpenPort = false;
 						serialPort.Open();
+						Task.Run(() => SerialPortRecv(serialPort));
 					}
 					catch (Exception)
-					{
+					{   //Failed to open the port.
 						UnableToOpenPort = true;
 					}
 				}
 				else
-				{   //TODO: Close Port, to be tested.
+				{
 					serialPort = activeSPs.First(sp => sp.PortName == portName);
 					if (serialPort.IsOpen)
 						serialPort.Close();
@@ -148,9 +148,14 @@ namespace VCOM_WinUI.ViewModel
 				}
 				else
 				{   //Port doesn't exist.
-					serialPort = serialPort = NewSP(ListSelectedCOM.COMNumStr, 9600, 8, StopBits.One, Parity.None);
+					//TODO: Port settings.
+					serialPort = NewSP(ListSelectedCOM.COMNumStr, 115200, 8, StopBits.One, Parity.None);
 					activeSPs.Add(serialPort);
+					spMsgDict.Add(serialPort, string.Empty);
 				}
+				//TODO: Add setting UI logic here!
+				dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[serialPort]);
+
 			}
 		}
 
@@ -164,30 +169,26 @@ namespace VCOM_WinUI.ViewModel
 			Handshake = Handshake.None,
 		};
 
+		void SerialPortRecv(SerialPort sp)
+		{
+			StringBuilder stringBuilder = new StringBuilder(spMsgDict[sp]);
+			byte[] rBuffer = new byte[1];
+			char charBuffer;
+			object lockObj = new object();
+			while (true)
+			{
+				sp.Read(rBuffer, 0, 1);
+				charBuffer = Convert.ToChar(rBuffer[0]);
+				if (charBuffer == '\0') continue;
+				spMsgDict[sp] = stringBuilder.Append(charBuffer).ToString();
+				if (ListSelectedCOM.COMNumStr == sp.PortName)
+					dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[sp]);
+			}
+		}
+
 		public MainCOMVM()
 		{
 			RefreshCOMList();
-			SerialPort serialPort = new SerialPort("COM92", 115200, Parity.None, 8, StopBits.One);
-			serialPort.Open();
-			StringBuilder stringBuilder = new StringBuilder();
-			byte[] rBuffer = new byte[1];
-			char charBuffer;
-			string tempStr;
-			object lockObj = new object();
-			Task.Run(() =>
-			{
-				while (true)
-				{
-					serialPort.Read(rBuffer, 0, 1);
-					charBuffer = Convert.ToChar(rBuffer[0]);
-					if (charBuffer == '\0') continue;
-					tempStr = stringBuilder.Append(charBuffer).ToString();
-					dispatcher.TryEnqueue(() =>
-					{
-						ReceiveString = tempStr;
-					});
-				}
-			});
 		}
 	}
 }

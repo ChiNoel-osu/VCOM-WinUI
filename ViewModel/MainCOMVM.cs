@@ -4,10 +4,12 @@ using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Management;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using VCOM_WinUI.Model;
 
@@ -27,7 +29,7 @@ namespace VCOM_WinUI.ViewModel
 		[ObservableProperty]
 		bool _IsNotRefreshing = true;
 		[ObservableProperty]
-		string _SettingPortString = Localization.Loc.Default;
+		string _SettingPortString = Localization.Loc.Default;   //Default parameter for new SPs.
 		[ObservableProperty]
 		bool _UnableToOpenPort = false; //For InfoBar.IsOpen
 		[ObservableProperty]
@@ -155,9 +157,62 @@ namespace VCOM_WinUI.ViewModel
 				}
 				//TODO: Add setting UI logic here!
 				dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[serialPort]);
-
 			}
 		}
+
+		#region Port setting change handler
+		partial void OnSettingBaudRateChanged(int value)
+		{
+			PortSettingChanger(1, value);
+		}
+		partial void OnSettingDataBitsChanged(int value)
+		{
+			PortSettingChanger(2, value);
+		}
+		partial void OnSettingStopBitsOrdinalChanged(StopBits value)
+		{
+			PortSettingChanger(3, (int)value);
+		}
+		partial void OnSettingParityOrdinalChanged(Parity value)
+		{
+			PortSettingChanger(4, (int)value);
+		}
+		void PortSettingChanger(byte type, int value)
+		{
+			SerialPort serialPort = activeSPs.First(sp => sp.PortName == ListSelectedCOM.COMNumStr);
+			switch (type)
+			{
+				case 1:
+					serialPort.BaudRate = value;
+					break;
+				case 2:
+					serialPort.DataBits = value;
+					break;
+				case 3:
+					serialPort.StopBits = (StopBits)value;
+					break;
+				case 4:
+					serialPort.Parity = (Parity)value;
+					break;
+				default:
+					break;
+			}
+			File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "PortSettings", serialPort.PortName + ".json"),
+				 JsonSerializer.Serialize(new PortSettingStruct
+				 {
+					 PortName = serialPort.PortName,
+					 BaudRate = serialPort.BaudRate,
+					 DataBits = serialPort.DataBits,
+					 StopBitsOrdinal = serialPort.StopBits,
+					 ParityOrdinal = serialPort.Parity
+				 }));
+
+
+
+
+			//PortSettingStruct testStruct = JsonSerializer.Deserialize<PortSettingStruct>(jsonStr);
+		}
+		#endregion
 
 		public static SerialPort NewSP(string portName, int baudRate, int dataBits, StopBits stopBits, Parity parity) => new SerialPort()
 		{
@@ -169,12 +224,16 @@ namespace VCOM_WinUI.ViewModel
 			Handshake = Handshake.None,
 		};
 
+		/// <summary>
+		/// Serial port reading routine.
+		/// CALL THIS IN A TASK!! Contains endless looping that only stops by exceptions.
+		/// </summary>
+		/// <param name="sp">The one and only SerialPort object.</param>
 		void SerialPortRecv(SerialPort sp)
 		{
 			StringBuilder stringBuilder = new StringBuilder(spMsgDict[sp]);
 			byte[] rBuffer = new byte[1];
 			char charBuffer;
-			object lockObj = new object();
 			while (true)
 			{
 				sp.Read(rBuffer, 0, 1);

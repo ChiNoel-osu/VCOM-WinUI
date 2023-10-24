@@ -209,9 +209,11 @@
 									<ComboBox HorizontalAlignment="Right"
 											  SelectedIndex="{Binding MainCOM.SettingStopBitsOrdinal, Mode=TwoWay, Converter={StaticResource Enum2IntConverter}}">
 										<ComboBox.Items>
+											<ComboBoxItem Content="0"
+														  IsEnabled="False" />
 											<x:Double>1</x:Double>
-											<x:Double>1.5</x:Double>
 											<x:Double>2</x:Double>
+											<x:Double>1.5</x:Double>
 										</ComboBox.Items>
 									</ComboBox>
 								</Grid>
@@ -294,6 +296,8 @@
 						   Margin="5,0,0,5"
 						   Text="{x:Bind loc:Loc.Receive}" />
 				<TextBox Grid.Row="1"
+						 ScrollViewer.VerticalScrollMode="Auto"
+						 TextChanged="TextBox_TextChanged"
 						 IsReadOnly="True"
 						 ScrollViewer.VerticalScrollBarVisibility="Visible"
 						 Text="{Binding MainCOM.ReceiveString, Mode=TwoWay}"

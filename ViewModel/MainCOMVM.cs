@@ -18,6 +18,7 @@ namespace VCOM_WinUI.ViewModel
 	public partial class MainCOMVM : ObservableObject
 	{
 		readonly DispatcherQueue dispatcher = DispatcherQueue.GetForCurrentThread(); //Gets the UI thread.
+		public static readonly string PortSettingDir = Path.Combine(Directory.GetCurrentDirectory(), "PortSettings");
 
 		#region Observable Properties
 		[ObservableProperty]
@@ -40,11 +41,12 @@ namespace VCOM_WinUI.ViewModel
 		[ObservableProperty]
 		int _SettingDataBits = 8;
 		[ObservableProperty]
-		StopBits _SettingStopBitsOrdinal = StopBits.None;
+		StopBits _SettingStopBitsOrdinal = StopBits.One;
 		[ObservableProperty]
 		Parity _SettingParityOrdinal = Parity.None;
 		#endregion
 		#endregion
+		bool opProgrammaticallyChanging = false;
 
 		public COMDeviceModel? ListSelectedCOM { get; set; }
 
@@ -150,35 +152,54 @@ namespace VCOM_WinUI.ViewModel
 				}
 				else
 				{   //Port doesn't exist.
-					//TODO: Port settings.
-					serialPort = NewSP(ListSelectedCOM.COMNumStr, 115200, 8, StopBits.One, Parity.None);
+					if (File.Exists(Path.Combine(PortSettingDir, ListSelectedCOM.COMNumStr + ".json")))
+					{   //Port setting file exists, load port setting from file.
+						PortSettingStruct portSetting = JsonSerializer.Deserialize<PortSettingStruct>(File.ReadAllText(Path.Combine(PortSettingDir, ListSelectedCOM.COMNumStr + ".json")));
+						if (portSetting.PortName != ListSelectedCOM.COMNumStr) { /*TODO: some shit might happen here.*/; }
+						opProgrammaticallyChanging = true;
+						serialPort = NewSP(ListSelectedCOM.COMNumStr, SettingBaudRate = portSetting.BaudRate, SettingDataBits = portSetting.DataBits, SettingStopBitsOrdinal = portSetting.StopBitsOrdinal, SettingParityOrdinal = portSetting.ParityOrdinal);
+						opProgrammaticallyChanging = false;
+					}
+					else
+					{   //Port setting file not exist, load defaults.
+						//TODO: Add default setting logic here.
+						serialPort = NewSP(ListSelectedCOM.COMNumStr, 115200, 8, StopBits.One, Parity.None);
+					}
 					activeSPs.Add(serialPort);
 					spMsgDict.Add(serialPort, string.Empty);
 				}
 				//TODO: Add setting UI logic here!
-				dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[serialPort]);
+				dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[serialPort]); //Change UI textbox string ref to selected port's RX string.
 			}
 		}
 
 		#region Port setting change handler
 		partial void OnSettingBaudRateChanged(int value)
 		{
+			if (opProgrammaticallyChanging) return;
 			PortSettingChanger(1, value);
 		}
 		partial void OnSettingDataBitsChanged(int value)
 		{
+			if (opProgrammaticallyChanging) return;
 			PortSettingChanger(2, value);
 		}
 		partial void OnSettingStopBitsOrdinalChanged(StopBits value)
 		{
+			if (opProgrammaticallyChanging) return;
 			PortSettingChanger(3, (int)value);
 		}
 		partial void OnSettingParityOrdinalChanged(Parity value)
 		{
+			if (opProgrammaticallyChanging) return;
 			PortSettingChanger(4, (int)value);
 		}
 		void PortSettingChanger(byte type, int value)
 		{
+			if (SettingPortString == Localization.Loc.Default)
+			{
+				return;
+			}
 			SerialPort serialPort = activeSPs.First(sp => sp.PortName == ListSelectedCOM.COMNumStr);
 			switch (type)
 			{
@@ -186,7 +207,7 @@ namespace VCOM_WinUI.ViewModel
 					serialPort.BaudRate = value;
 					break;
 				case 2:
-					serialPort.DataBits = value;
+					serialPort.DataBits = value;    //TODO: Add restriction between 5 and 8
 					break;
 				case 3:
 					serialPort.StopBits = (StopBits)value;
@@ -197,7 +218,7 @@ namespace VCOM_WinUI.ViewModel
 				default:
 					break;
 			}
-			File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "PortSettings", serialPort.PortName + ".json"),
+			File.WriteAllText(Path.Combine(PortSettingDir, serialPort.PortName + ".json"),
 				 JsonSerializer.Serialize(new PortSettingStruct
 				 {
 					 PortName = serialPort.PortName,
@@ -206,11 +227,6 @@ namespace VCOM_WinUI.ViewModel
 					 StopBitsOrdinal = serialPort.StopBits,
 					 ParityOrdinal = serialPort.Parity
 				 }));
-
-
-
-
-			//PortSettingStruct testStruct = JsonSerializer.Deserialize<PortSettingStruct>(jsonStr);
 		}
 		#endregion
 
@@ -247,6 +263,8 @@ namespace VCOM_WinUI.ViewModel
 
 		public MainCOMVM()
 		{
+			if (!Directory.Exists(PortSettingDir))  //TODO: Log about it not existing.
+				Directory.CreateDirectory(PortSettingDir);
 			RefreshCOMList();
 		}
 	}

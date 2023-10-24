@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using System.Timers;
 using VCOM_WinUI.ViewModel;
 
@@ -55,6 +56,17 @@ namespace VCOM_WinUI.View
 			timer.Stop();
 			DispatcherQueue.TryEnqueue(() => MyInfoBar.Translation = System.Numerics.Vector3.Zero);
 			isInfoBarVisible = false;
+		}
+
+		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{   //https://stackoverflow.com/questions/40114620/uwp-c-sharp-scroll-to-the-bottom-of-textbox
+			if (((TextBox)sender).FocusState == Microsoft.UI.Xaml.FocusState.Unfocused)
+			{   //Only scroll when unfocused.
+				object scrViewer = VisualTreeHelper.GetChild(VisualTreeHelper.GetChild((TextBox)sender, 0), 1);
+				//Scroll to bottom unless user scrolled up manually.
+				if (((ScrollViewer)scrViewer).ExtentHeight - ((ScrollViewer)scrViewer).VerticalOffset < ((TextBox)sender).ActualHeight + 40 || ((ScrollViewer)scrViewer).VerticalOffset == 0)
+					((ScrollViewer)scrViewer).ChangeView(0.0f, ((ScrollViewer)scrViewer).ExtentHeight, 1.0f);
+			}
 		}
 	}
 }

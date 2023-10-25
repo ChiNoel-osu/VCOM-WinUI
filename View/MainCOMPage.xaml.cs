@@ -1,5 +1,5 @@
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using System;
 using System.Timers;
 using VCOM_WinUI.ViewModel;
 
@@ -13,12 +13,15 @@ namespace VCOM_WinUI.View
 	/// </summary>
 	public sealed partial class MainCOMPage : Page
 	{
-		Timer timer = new Timer();
+		Timer infoBarTimer = new Timer() { Interval = 4000 };
+		Timer selectionTimer = new Timer() { Interval = 500 };
 		bool isInfoBarVisible = false;
 
 		public MainCOMPage()
 		{
 			this.InitializeComponent();
+			infoBarTimer.Elapsed += InfoBarTimer_Elapsed;
+			selectionTimer.Elapsed += SelectionTimer_Elapsed;
 		}
 
 		private void COMDeviceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -35,38 +38,53 @@ namespace VCOM_WinUI.View
 			if ((bool)e.NewValue)
 			{   //Unable to open port.
 				MyInfoBar.IsOpen = true;
-				MyInfoBar.Translation = new System.Numerics.Vector3(0, -60, 0);
+				MyInfoBar.Translation = new System.Numerics.Vector3(0, -60, 0); //Move the info bar up.
 				if (!isInfoBarVisible)
 				{
 					isInfoBarVisible = true;
-					timer.Interval = 4000;
-					timer.Start();
-					timer.Elapsed += Timer_Elapsed;
+					infoBarTimer.Start();
 				}
 			}
 			else
 			{
-				MyInfoBar.Translation = System.Numerics.Vector3.Zero;
+				MyInfoBar.Translation = System.Numerics.Vector3.Zero;   //Move the info bar down.
 				MyInfoBar.IsOpen = false;
 			}
 		}
-
-		private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+		private void InfoBarTimer_Elapsed(object sender, ElapsedEventArgs e)
 		{
-			timer.Stop();
+			infoBarTimer.Stop();
 			DispatcherQueue.TryEnqueue(() => MyInfoBar.Translation = System.Numerics.Vector3.Zero);
 			isInfoBarVisible = false;
 		}
 
-		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-		{   //https://stackoverflow.com/questions/40114620/uwp-c-sharp-scroll-to-the-bottom-of-textbox
-			if (((TextBox)sender).FocusState == Microsoft.UI.Xaml.FocusState.Unfocused)
-			{   //Only scroll when unfocused.
-				object scrViewer = VisualTreeHelper.GetChild(VisualTreeHelper.GetChild((TextBox)sender, 0), 1);
-				//Scroll to bottom unless user scrolled up manually.
-				if (((ScrollViewer)scrViewer).ExtentHeight - ((ScrollViewer)scrViewer).VerticalOffset < ((TextBox)sender).ActualHeight + 40 || ((ScrollViewer)scrViewer).VerticalOffset == 0)
-					((ScrollViewer)scrViewer).ChangeView(0.0f, ((ScrollViewer)scrViewer).ExtentHeight, 1.0f);
+		private void TextBlock_SizeChanged(object sender, Microsoft.UI.Xaml.SizeChangedEventArgs e) => RecvScrViewer.ChangeView(RecvScrViewer.HorizontalOffset, RecvScrViewer.ExtentHeight, 1.0f);
+
+		private void TextBlock_SelectionChanged(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		{
+			if (!String.IsNullOrEmpty(((TextBlock)sender).SelectedText))    //STOP UPDATING
+			{
+				selectionTimer.Stop();
+				((MainViewModel)DataContext).MainCOM.recvNoUpdate = true;
 			}
+			else
+			{
+				selectionTimer.Start();
+			}
+		}
+		private void RecvTextBlock_LosingFocus(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.LosingFocusEventArgs args)
+		{
+			((MainViewModel)DataContext).MainCOM.recvNoUpdate = false;
+			((MainViewModel)DataContext).MainCOM.UpdateCurrentSPRecvString();
+		}
+		private void SelectionTimer_Elapsed(object sender, ElapsedEventArgs e)
+		{   //If some time later no selection made, keep updating.
+			selectionTimer.Stop();
+			DispatcherQueue.TryEnqueue(() =>
+			{
+				((MainViewModel)DataContext).MainCOM.recvNoUpdate = false;
+				((MainViewModel)DataContext).MainCOM.UpdateCurrentSPRecvString();
+			});
 		}
 	}
 }

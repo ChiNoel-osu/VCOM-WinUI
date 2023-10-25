@@ -46,7 +46,8 @@ namespace VCOM_WinUI.ViewModel
 		Parity _SettingParityOrdinal = Parity.None;
 		#endregion
 		#endregion
-		bool opProgrammaticallyChanging = false;
+		bool opProgrammaticallyChanging = false;    //Used when any ObservableProperty is programmatically changing.
+		public bool recvNoUpdate = false;   //Used when user selected some text in the UI where text should not be updated.
 
 		public COMDeviceModel? ListSelectedCOM { get; set; }
 
@@ -168,7 +169,6 @@ namespace VCOM_WinUI.ViewModel
 					activeSPs.Add(serialPort);
 					spMsgDict.Add(serialPort, string.Empty);
 				}
-				//TODO: Add setting UI logic here!
 				dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[serialPort]); //Change UI textbox string ref to selected port's RX string.
 			}
 		}
@@ -252,13 +252,26 @@ namespace VCOM_WinUI.ViewModel
 			char charBuffer;
 			while (true)
 			{
-				sp.Read(rBuffer, 0, 1);
+				try
+				{
+					sp.Read(rBuffer, 0, 1);
+				}
+				catch (Exception)
+				{
+					break;
+				}
 				charBuffer = Convert.ToChar(rBuffer[0]);
 				if (charBuffer == '\0') continue;
 				spMsgDict[sp] = stringBuilder.Append(charBuffer).ToString();
-				if (ListSelectedCOM.COMNumStr == sp.PortName)
+				if (ListSelectedCOM.COMNumStr == sp.PortName && !recvNoUpdate)
 					dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[sp]);
 			}
+		}
+
+		public void UpdateCurrentSPRecvString()
+		{
+			if (ListSelectedCOM is null) return;
+			dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[activeSPs.First(sp => sp.PortName == ListSelectedCOM.COMNumStr)]);
 		}
 
 		public MainCOMVM()

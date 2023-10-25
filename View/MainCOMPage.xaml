@@ -290,20 +290,38 @@
 					<RowDefinition Height="35" />
 					<RowDefinition Height="*" />
 				</Grid.RowDefinitions>
-				<TextBlock Grid.Row="0"
-						   Style="{StaticResource SubtitleTextBlockStyle}"
-						   VerticalAlignment="Center"
-						   Margin="5,0,0,5"
-						   Text="{x:Bind loc:Loc.Receive}" />
-				<TextBox Grid.Row="1"
-						 ScrollViewer.VerticalScrollMode="Auto"
-						 TextChanged="TextBox_TextChanged"
-						 IsReadOnly="True"
-						 ScrollViewer.VerticalScrollBarVisibility="Visible"
-						 Text="{Binding MainCOM.ReceiveString, Mode=TwoWay}"
-						 CornerRadius="8"
-						 FontFamily="Consolas"
-						 TextWrapping="Wrap" />
+				<controls:DockPanel Grid.Row="0">
+					<TextBlock controls:DockPanel.Dock="Left"
+							   Style="{StaticResource SubtitleTextBlockStyle}"
+							   Margin="5,0,0,5"
+							   VerticalAlignment="Center"
+							   Text="{x:Bind loc:Loc.Receive}" />
+					<StackPanel controls:DockPanel.Dock="Right"
+								HorizontalAlignment="Right"
+								VerticalAlignment="Bottom">
+						<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
+								   Margin="0,0,10,0"
+								   Text="Select Mode | Text update disabled"/>
+						<ProgressBar Value="88" Margin="0,2,10,4"/>
+					</StackPanel>
+				</controls:DockPanel>
+				<ScrollViewer x:Name="RecvScrViewer"
+							  Grid.Row="1"
+							  ZoomMode="Enabled"
+							  BorderBrush="Gray"
+							  BorderThickness="2"
+							  CornerRadius="8"
+							  Margin="0,0,0,-2"
+							  Padding="10,5"
+							  VerticalScrollBarVisibility="Visible"
+							  HorizontalScrollBarVisibility="Visible">
+					<TextBlock IsTextSelectionEnabled="True"
+							   SizeChanged="TextBlock_SizeChanged"
+							   SelectionChanged="TextBlock_SelectionChanged"
+							   LosingFocus="RecvTextBlock_LosingFocus"
+							   Text="{Binding MainCOM.ReceiveString, Mode=OneWay}"
+							   FontFamily="Consolas" />
+				</ScrollViewer>
 			</Grid>
 			<!--#endregion-->
 			<!--#region Grid(0,2)-->

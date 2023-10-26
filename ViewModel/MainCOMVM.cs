@@ -35,6 +35,8 @@ namespace VCOM_WinUI.ViewModel
 		bool _UnableToOpenPort = false; //For InfoBar.IsOpen
 		[ObservableProperty]
 		string _ReceiveString = string.Empty;
+		[ObservableProperty]
+		bool _RecvNoUpdate = false;  //Used when user selected some text in the UI where text should not be updated.
 		#region Port Settings
 		[ObservableProperty]
 		int _SettingBaudRate = 115200;
@@ -47,7 +49,6 @@ namespace VCOM_WinUI.ViewModel
 		#endregion
 		#endregion
 		bool opProgrammaticallyChanging = false;    //Used when any ObservableProperty is programmatically changing.
-		public bool recvNoUpdate = false;   //Used when user selected some text in the UI where text should not be updated.
 
 		public COMDeviceModel? ListSelectedCOM { get; set; }
 
@@ -263,7 +264,7 @@ namespace VCOM_WinUI.ViewModel
 				charBuffer = Convert.ToChar(rBuffer[0]);
 				if (charBuffer == '\0') continue;
 				spMsgDict[sp] = stringBuilder.Append(charBuffer).ToString();
-				if (ListSelectedCOM.COMNumStr == sp.PortName && !recvNoUpdate)
+				if (ListSelectedCOM.COMNumStr == sp.PortName && !RecvNoUpdate)
 					dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[sp]);
 			}
 		}

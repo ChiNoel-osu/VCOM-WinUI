@@ -14,7 +14,7 @@ namespace VCOM_WinUI.View
 	public sealed partial class MainCOMPage : Page
 	{
 		Timer infoBarTimer = new Timer() { Interval = 4000 };
-		Timer selectionTimer = new Timer() { Interval = 500 };
+		Timer selectionTimer = new Timer() { Interval = 888 };
 		bool isInfoBarVisible = false;
 
 		public MainCOMPage()
@@ -65,7 +65,7 @@ namespace VCOM_WinUI.View
 			if (!String.IsNullOrEmpty(((TextBlock)sender).SelectedText))    //STOP UPDATING
 			{
 				selectionTimer.Stop();
-				((MainViewModel)DataContext).MainCOM.recvNoUpdate = true;
+				((MainViewModel)DataContext).MainCOM.RecvNoUpdate = true;
 			}
 			else
 			{
@@ -74,7 +74,7 @@ namespace VCOM_WinUI.View
 		}
 		private void RecvTextBlock_LosingFocus(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.LosingFocusEventArgs args)
 		{
-			((MainViewModel)DataContext).MainCOM.recvNoUpdate = false;
+			((MainViewModel)DataContext).MainCOM.RecvNoUpdate = false;
 			((MainViewModel)DataContext).MainCOM.UpdateCurrentSPRecvString();
 		}
 		private void SelectionTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -82,7 +82,7 @@ namespace VCOM_WinUI.View
 			selectionTimer.Stop();
 			DispatcherQueue.TryEnqueue(() =>
 			{
-				((MainViewModel)DataContext).MainCOM.recvNoUpdate = false;
+				((MainViewModel)DataContext).MainCOM.RecvNoUpdate = false;
 				((MainViewModel)DataContext).MainCOM.UpdateCurrentSPRecvString();
 			});
 		}

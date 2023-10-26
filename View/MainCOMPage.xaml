@@ -17,30 +17,45 @@
 		<converter:Enum2IntConverter x:Key="Enum2IntConverter" />
 	</Page.Resources>
 	<Grid>
-		<!--<VisualStateManager.VisualStateGroups>
+		<!--The VisualStateManager NEED to be defined in the FIRST CONTROL!!!!!!! In this case the Grid.-->
+		<VisualStateManager.VisualStateGroups>
 			<VisualStateGroup>
 				<VisualState>
 					<VisualState.StateTriggers>
-						<triggers:IsEqualStateTrigger Value="{Binding MainCOM.UnableToOpenPort, Mode=OneWay}"
+						<triggers:IsEqualStateTrigger Value="{Binding MainCOM.RecvNoUpdate, Mode=OneWay}"
 													  To="True" />
 					</VisualState.StateTriggers>
-					<VisualState.Setters>
-						<Setter Target="MyInfoBar.IsOpen"
-								Value="True" />
-					</VisualState.Setters>
+					<VisualState.Storyboard>
+						<Storyboard>
+							<Storyboard.Children>
+								<Storyboard>
+									<FadeInThemeAnimation TargetName="EditModeIndicator" />
+								</Storyboard>
+								<Storyboard>
+									<DoubleAnimation Storyboard.TargetName="EditModeTimeLeft"
+													 Storyboard.TargetProperty="Value"
+													 From="100"
+													 To="0"
+													 Duration="0:0:1"
+													 EnableDependentAnimation="True" />
+								</Storyboard>
+							</Storyboard.Children>
+						</Storyboard>
+					</VisualState.Storyboard>
 				</VisualState>
 				<VisualState>
 					<VisualState.StateTriggers>
-						<triggers:IsEqualStateTrigger Value="{Binding MainCOM.UnableToOpenPort, Mode=OneWay}"
+						<triggers:IsEqualStateTrigger Value="{Binding MainCOM.RecvNoUpdate, Mode=OneWay}"
 													  To="False" />
 					</VisualState.StateTriggers>
-					<VisualState.Setters>
-						<Setter Target="MyInfoBar.IsOpen"
-								Value="False" />
-					</VisualState.Setters>
+					<VisualState.Storyboard>
+						<Storyboard>
+							<FadeOutThemeAnimation TargetName="EditModeIndicator" />
+						</Storyboard>
+					</VisualState.Storyboard>
 				</VisualState>
 			</VisualStateGroup>
-		</VisualStateManager.VisualStateGroups>-->
+		</VisualStateManager.VisualStateGroups>
 		<Grid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto"
@@ -296,13 +311,16 @@
 							   Margin="5,0,0,5"
 							   VerticalAlignment="Center"
 							   Text="{x:Bind loc:Loc.Receive}" />
-					<StackPanel controls:DockPanel.Dock="Right"
+					<StackPanel x:Name="EditModeIndicator"
+								controls:DockPanel.Dock="Right"
 								HorizontalAlignment="Right"
 								VerticalAlignment="Bottom">
 						<TextBlock Style="{StaticResource CaptionTextBlockStyle}"
 								   Margin="0,0,10,0"
-								   Text="Select Mode | Text update disabled"/>
-						<ProgressBar Value="88" Margin="0,2,10,4"/>
+								   Text="Select Mode | Text update stopped" />
+						<ProgressBar x:Name="EditModeTimeLeft"
+									 FlowDirection="RightToLeft"
+									 Margin="0,2,10,4" />
 					</StackPanel>
 				</controls:DockPanel>
 				<ScrollViewer x:Name="RecvScrViewer"

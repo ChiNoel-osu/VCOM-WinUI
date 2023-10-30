@@ -15,6 +15,14 @@
 	  mc:Ignorable="d">
 	<Page.Resources>
 		<converter:Enum2IntConverter x:Key="Enum2IntConverter" />
+		<Storyboard x:Name="EditModeSB">
+			<DoubleAnimation Storyboard.TargetName="EditModeTimeLeft"
+							 Storyboard.TargetProperty="Value"
+							 From="100"
+							 To="0"
+							 Duration="0:0:1"
+							 EnableDependentAnimation="True" />
+		</Storyboard>
 	</Page.Resources>
 	<Grid>
 		<!--The VisualStateManager NEED to be defined in the FIRST CONTROL!!!!!!! In this case the Grid.-->
@@ -27,19 +35,7 @@
 					</VisualState.StateTriggers>
 					<VisualState.Storyboard>
 						<Storyboard>
-							<Storyboard.Children>
-								<Storyboard>
-									<FadeInThemeAnimation TargetName="EditModeIndicator" />
-								</Storyboard>
-								<Storyboard>
-									<DoubleAnimation Storyboard.TargetName="EditModeTimeLeft"
-													 Storyboard.TargetProperty="Value"
-													 From="100"
-													 To="0"
-													 Duration="0:0:1"
-													 EnableDependentAnimation="True" />
-								</Storyboard>
-							</Storyboard.Children>
+							<FadeInThemeAnimation TargetName="EditModeIndicator" />
 						</Storyboard>
 					</VisualState.Storyboard>
 				</VisualState>

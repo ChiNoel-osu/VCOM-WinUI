@@ -65,15 +65,19 @@ namespace VCOM_WinUI.View
 			if (!String.IsNullOrEmpty(((TextBlock)sender).SelectedText))    //STOP UPDATING
 			{
 				selectionTimer.Stop();
+				EditModeSB.Stop();
+				EditModeTimeLeft.Value = 100;
 				((MainViewModel)DataContext).MainCOM.RecvNoUpdate = true;
 			}
 			else
 			{
 				selectionTimer.Start();
+				EditModeSB.Begin();
 			}
 		}
 		private void RecvTextBlock_LosingFocus(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.LosingFocusEventArgs args)
 		{
+			selectionTimer.Stop();
 			((MainViewModel)DataContext).MainCOM.RecvNoUpdate = false;
 			((MainViewModel)DataContext).MainCOM.UpdateCurrentSPRecvString();
 		}

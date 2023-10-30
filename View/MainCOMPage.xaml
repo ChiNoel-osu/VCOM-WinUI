@@ -206,11 +206,15 @@
 											   VerticalAlignment="Center"
 											   Text="{x:Bind loc:Loc.Databits}"
 											   Style="{StaticResource BodyTextBlockStyle}" />
-									<NumberBox HorizontalAlignment="Right"
-											   VerticalAlignment="Center"
-											   Value="{Binding MainCOM.SettingDataBits, Mode=TwoWay}"
-											   Minimum="1"
-											   SpinButtonPlacementMode="Compact" />
+									<ComboBox HorizontalAlignment="Right"
+											  SelectedValue="{Binding MainCOM.SettingDataBits, Mode=TwoWay}">
+										<ComboBox.Items>
+											<x:Int32>5</x:Int32>
+											<x:Int32>6</x:Int32>
+											<x:Int32>7</x:Int32>
+											<x:Int32>8</x:Int32>
+										</ComboBox.Items>
+									</ComboBox>
 								</Grid>
 								<Grid>
 									<TextBlock HorizontalAlignment="Left"
@@ -222,8 +226,8 @@
 										<ComboBox.Items>
 											<ComboBoxItem Content="0"
 														  IsEnabled="False" />
-											<x:Double>1</x:Double>
-											<x:Double>2</x:Double>
+											<x:Int32>1</x:Int32>
+											<x:Int32>2</x:Int32>
 											<x:Double>1.5</x:Double>
 										</ComboBox.Items>
 									</ComboBox>

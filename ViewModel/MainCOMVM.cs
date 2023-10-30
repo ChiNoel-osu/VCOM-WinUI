@@ -151,6 +151,10 @@ namespace VCOM_WinUI.ViewModel
 				if (activeSPs.Any(sp => sp.PortName == ListSelectedCOM.COMNumStr))
 				{   //Port exists.
 					serialPort = activeSPs.First(sp => sp.PortName == ListSelectedCOM.COMNumStr);
+					SettingBaudRate = serialPort.BaudRate;
+					SettingDataBits = serialPort.DataBits;
+					SettingStopBitsOrdinal = serialPort.StopBits;
+					SettingParityOrdinal = serialPort.Parity;
 				}
 				else
 				{   //Port doesn't exist.
@@ -165,7 +169,7 @@ namespace VCOM_WinUI.ViewModel
 					else
 					{   //Port setting file not exist, load defaults.
 						//TODO: Add default setting logic here.
-						serialPort = NewSP(ListSelectedCOM.COMNumStr, 115200, 8, StopBits.One, Parity.None);
+						serialPort = NewSP(ListSelectedCOM.COMNumStr, SettingBaudRate = 115200, SettingDataBits = 8, SettingStopBitsOrdinal = StopBits.One, SettingParityOrdinal = Parity.None);
 					}
 					activeSPs.Add(serialPort);
 					spMsgDict.Add(serialPort, string.Empty);
@@ -182,7 +186,7 @@ namespace VCOM_WinUI.ViewModel
 		}
 		partial void OnSettingDataBitsChanged(int value)
 		{
-			if (opProgrammaticallyChanging) return;
+			if (opProgrammaticallyChanging || value > 8 || value < 5) return;
 			PortSettingChanger(2, value);
 		}
 		partial void OnSettingStopBitsOrdinalChanged(StopBits value)
@@ -198,10 +202,12 @@ namespace VCOM_WinUI.ViewModel
 		void PortSettingChanger(byte type, int value)
 		{
 			if (SettingPortString == Localization.Loc.Default)
-			{
 				return;
-			}
-			SerialPort serialPort = activeSPs.First(sp => sp.PortName == ListSelectedCOM.COMNumStr);
+			SerialPort serialPort;
+			if (activeSPs.Any(sp => sp.PortName == ListSelectedCOM.COMNumStr))
+				serialPort = activeSPs.First(sp => sp.PortName == ListSelectedCOM.COMNumStr);
+			else
+				return;
 			switch (type)
 			{
 				case 1:

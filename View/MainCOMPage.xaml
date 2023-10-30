@@ -54,8 +54,7 @@
 		</VisualStateManager.VisualStateGroups>
 		<Grid>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto"
-								  MinWidth="210" />
+				<ColumnDefinition Width="Auto" MaxWidth="400"/>
 				<ColumnDefinition Width="2*" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
@@ -69,7 +68,8 @@
 				<controls:DockPanel>
 					<TextBlock controls:DockPanel.Dock="Top"
 							   HorizontalAlignment="Center"
-							   Margin="20,10"
+							   Padding="20,10"
+							   TextWrapping="WrapWholeWords"
 							   Text="{x:Bind loc:Loc.COMList}"
 							   Style="{StaticResource SubtitleTextBlockStyle}" />
 					<ListView controls:DockPanel.Dock="Bottom"
@@ -375,8 +375,23 @@
 						   VerticalAlignment="Center"
 						   Margin="5,0,0,5"
 						   Text="{x:Bind loc:Loc.Send}" />
+				<Grid Grid.Row="1">
+					<Border CornerRadius="8"
+							BorderBrush="Gray"
+							BorderThickness="2" />
+				</Grid>
 			</Grid>
 			<!--#endregion-->
+			<controls:GridSplitter Grid.Column="1"
+								   Background="Transparent"
+								   GripperForeground="Transparent"
+								   Margin="-10.5,0,0,0"
+								   HorizontalAlignment="Left"/>
+			<controls:GridSplitter Grid.Column="2"
+								   Background="Transparent"
+								   GripperForeground="Transparent"
+								   Margin="-5.5,0,0,0"
+								   HorizontalAlignment="Left" />
 		</Grid>
 		<InfoBar x:Name="MyInfoBar"
 				 Severity="Error"

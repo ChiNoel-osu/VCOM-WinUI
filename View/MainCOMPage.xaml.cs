@@ -93,7 +93,7 @@ namespace VCOM_WinUI.View
 			DispatcherQueue.TryEnqueue(() =>
 			{
 				((MainViewModel)DataContext).MainCOM.RecvNoUpdate = false;
-				((MainViewModel)DataContext).MainCOM.UpdateSPRecvString(((COMDeviceModel)COMDeviceList.SelectedItem).COMNumStr);
+				((MainViewModel)DataContext).MainCOM.UpdateSPRecvString(((COMDeviceModel)COMDeviceList.SelectedItem)?.COMNumStr);
 			});
 		}
 	}

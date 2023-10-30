@@ -144,6 +144,7 @@ namespace VCOM_WinUI.ViewModel
 		[RelayCommand]
 		public void ClearReceivedText(string portName)
 		{
+			if (spMsgDict.Count == 0) return;
 			spMsgDict[activeSPs.First(sp => sp.PortName == portName)] = string.Empty;
 			UpdateSPRecvString(portName);
 		}

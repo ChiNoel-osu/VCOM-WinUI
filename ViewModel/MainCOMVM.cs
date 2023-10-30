@@ -141,6 +141,13 @@ namespace VCOM_WinUI.ViewModel
 				IsCurrentPortOpen = false;
 		}
 
+		[RelayCommand]
+		public void ClearReceivedText(string portName)
+		{
+			spMsgDict[activeSPs.First(sp => sp.PortName == portName)] = string.Empty;
+			UpdateSPRecvString(portName);
+		}
+
 		public void SelectedCOMChanged()
 		{
 			if (ListSelectedCOM is not null)
@@ -269,16 +276,17 @@ namespace VCOM_WinUI.ViewModel
 				}
 				charBuffer = Convert.ToChar(rBuffer[0]);
 				if (charBuffer == '\0') continue;
+				if (spMsgDict[sp].Length == 0) stringBuilder.Clear();   //Received string cleared.
 				spMsgDict[sp] = stringBuilder.Append(charBuffer).ToString();
 				if (ListSelectedCOM.COMNumStr == sp.PortName && !RecvNoUpdate)
 					dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[sp]);
 			}
 		}
 
-		public void UpdateCurrentSPRecvString()
+		public void UpdateSPRecvString(string portName)
 		{
 			if (ListSelectedCOM is null) return;
-			dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[activeSPs.First(sp => sp.PortName == ListSelectedCOM.COMNumStr)]);
+			dispatcher.TryEnqueue(() => ReceiveString = spMsgDict[activeSPs.First(sp => sp.PortName == portName)]);
 		}
 
 		public MainCOMVM()

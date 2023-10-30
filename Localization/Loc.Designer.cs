@@ -205,6 +205,15 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Mode | Update paused.
+        /// </summary>
+        internal static string SelectMode {
+            get {
+                return ResourceManager.GetString("SelectMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Send.
         /// </summary>
         internal static string Send {

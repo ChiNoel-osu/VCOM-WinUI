@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Timers;
+using VCOM_WinUI.Model;
 using VCOM_WinUI.ViewModel;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -65,22 +66,26 @@ namespace VCOM_WinUI.View
 			if (!String.IsNullOrEmpty(((TextBlock)sender).SelectedText))    //STOP UPDATING
 			{
 				selectionTimer.Stop();
-				EditModeSB.Stop();
-				EditModeTimeLeft.Value = 100;
+				SelectModeSB.Stop();
+				SelectModeTimeLeft.Value = 100;
 				((MainViewModel)DataContext).MainCOM.RecvNoUpdate = true;
 			}
 			else
 			{
 				selectionTimer.Start();
-				EditModeSB.Begin();
+				SelectModeSB.Begin();
 			}
 		}
 		private void RecvTextBlock_LosingFocus(Microsoft.UI.Xaml.UIElement sender, Microsoft.UI.Xaml.Input.LosingFocusEventArgs args)
-		{
+		{   //Don't continue update if:
+			//1 - It's updating. (User did not trigger SelectMode)
+			//2 - Focus changed programmatically (Context menu)
+			//3 - The entire app is unfocused (NewFocusedElement is null)
+			if (((MainViewModel)DataContext).MainCOM.RecvNoUpdate == false || args.FocusState is Microsoft.UI.Xaml.FocusState.Programmatic || args.NewFocusedElement is null) return;
 			selectionTimer.Stop();
-			EditModeTimeLeft.Value = 0;
+			SelectModeTimeLeft.Value = 0;
 			((MainViewModel)DataContext).MainCOM.RecvNoUpdate = false;
-			((MainViewModel)DataContext).MainCOM.UpdateCurrentSPRecvString();
+			((MainViewModel)DataContext).MainCOM.UpdateSPRecvString(((COMDeviceModel)COMDeviceList.SelectedItem).COMNumStr);
 		}
 		private void SelectionTimer_Elapsed(object sender, ElapsedEventArgs e)
 		{   //If some time later no selection made, keep updating.
@@ -88,7 +93,7 @@ namespace VCOM_WinUI.View
 			DispatcherQueue.TryEnqueue(() =>
 			{
 				((MainViewModel)DataContext).MainCOM.RecvNoUpdate = false;
-				((MainViewModel)DataContext).MainCOM.UpdateCurrentSPRecvString();
+				((MainViewModel)DataContext).MainCOM.UpdateSPRecvString(((COMDeviceModel)COMDeviceList.SelectedItem).COMNumStr);
 			});
 		}
 	}

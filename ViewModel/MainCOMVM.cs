@@ -166,9 +166,9 @@ namespace VCOM_WinUI.ViewModel
 				}
 				else
 				{   //Port doesn't exist.
-					if (File.Exists(Path.Combine(PortSettingDir, ListSelectedCOM.COMNumStr + ".json")))
+					if (File.Exists(Path.Combine(PortSettingDir, ListSelectedCOM.COMNumStr + "V.json")))
 					{   //Port setting file exists, load port setting from file.
-						PortSettingStruct portSetting = JsonSerializer.Deserialize<PortSettingStruct>(File.ReadAllText(Path.Combine(PortSettingDir, ListSelectedCOM.COMNumStr + ".json")));
+						PortSettingStruct portSetting = JsonSerializer.Deserialize<PortSettingStruct>(File.ReadAllText(Path.Combine(PortSettingDir, ListSelectedCOM.COMNumStr + "V.json")));
 						if (portSetting.PortName != ListSelectedCOM.COMNumStr) { /*TODO: some shit might happen here.*/; }
 						opProgrammaticallyChanging = true;
 						serialPort = NewSP(ListSelectedCOM.COMNumStr, SettingBaudRate = portSetting.BaudRate, SettingDataBits = portSetting.DataBits, SettingStopBitsOrdinal = portSetting.StopBitsOrdinal, SettingParityOrdinal = portSetting.ParityOrdinal);
@@ -233,7 +233,7 @@ namespace VCOM_WinUI.ViewModel
 				default:
 					break;
 			}
-			File.WriteAllText(Path.Combine(PortSettingDir, serialPort.PortName + ".json"),
+			File.WriteAllText(Path.Combine(PortSettingDir, serialPort.PortName + "V.json"),
 				 JsonSerializer.Serialize(new PortSettingStruct
 				 {
 					 PortName = serialPort.PortName,

@@ -335,10 +335,9 @@
 							  BorderBrush="Gray"
 							  BorderThickness="2"
 							  CornerRadius="8"
-							  Margin="0,0,0,-2"
-							  Padding="10,5"
-							  VerticalScrollBarVisibility="Visible">
+							  Margin="0,0,0,-2">
 					<TextBlock IsTextSelectionEnabled="True"
+							   Margin="10,5"
 							   SizeChanged="TextBlock_SizeChanged"
 							   SelectionChanged="TextBlock_SelectionChanged"
 							   LosingFocus="RecvTextBlock_LosingFocus"

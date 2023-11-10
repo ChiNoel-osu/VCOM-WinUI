@@ -65,22 +65,25 @@ namespace VCOM_WinUI.ViewModel
 			IsNotRefreshing = false;        //Update RefreshBtn IsEnabled.	
 			Task.Run(() =>
 			{
-				string[] oldPortNums = portNumNameDict.Keys.ToArray();
+				Dictionary<string, string> oldPortNumNameDict = new Dictionary<string, string>(portNumNameDict);
 				portNumNameDict.Clear();
-				//ListSelectedCOM = null;
 				using ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption like '%(COM%'");
+				//TODO: NEED REWORK!!!!!
 				string[] portNums = SerialPort.GetPortNames();
 				string[] portNames = searcher.Get().Cast<ManagementBaseObject>().ToList().Select(obj => obj["Caption"].ToString()).ToArray();
+				if(portNums.Length!=portNames.Length)
+				{	//SerialPort.GetPortNames() is broken.
+
+				}
 				List<string> dontAdd = new List<string>();
 				List<string> removeThis = new List<string>();
 				foreach (string portNum in portNums)    //Create dictionary based on port number and its name.
-					portNumNameDict.Add(portNum, portNames.Where(name => name.Contains(portNum)).FirstOrDefault("Unknown Device"));
-				foreach (string oldPortNum in oldPortNums)
-					if (portNums.Contains(oldPortNum))  //Add existing port to the "Don't Add" list.
-						dontAdd.Add(oldPortNum);
-					else                                    //Add not existing port to the "Remove" list.
-						removeThis.Add(oldPortNum);
-				//Create an array of reference of COMDeviceModel that's going to be deleted.
+					portNumNameDict.Add(portNum, portNames.Where(name => name.Contains(portNum)).FirstOrDefault("Unknown Device."));
+				foreach (KeyValuePair<string, string> old in oldPortNumNameDict)
+					if (portNums.Contains(old.Key) && portNames.Contains(old.Value))    //Add existing port to the "Don't Add" list. (Their Num and Name are the same)
+						dontAdd.Add(old.Key);
+					else    //Add not existing port to the "Remove" list. (Or a port's name has changed, which is unlikely to happen unless there's something I fucked up.)
+						removeThis.Add(old.Key);
 				COMDeviceModel[] toBeRemoved = (from device in COMList where removeThis.Contains(device.COMNumStr) select device).ToArray();
 				dispatcher.TryEnqueue(() =>
 				{   //Use UI thread to update COMList.

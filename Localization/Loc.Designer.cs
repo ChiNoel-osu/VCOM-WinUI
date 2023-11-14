@@ -232,7 +232,7 @@ namespace VCOM_WinUI.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure it&apos;s not in use..
+        ///   Looks up a localized string similar to Make sure it actually exists and is not in use..
         /// </summary>
         internal static string SPOpenFailMsg {
             get {

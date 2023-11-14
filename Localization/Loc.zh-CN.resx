@@ -158,7 +158,7 @@
     <value>无法打开串口!</value>
   </data>
   <data name="SPOpenFailMsg" xml:space="preserve">
-    <value>请确保其不被占用.</value>
+    <value>请确保其存在且不被占用.</value>
   </data>
   <data name="SelectMode" xml:space="preserve">
     <value>选择模式 | 更新已暂停</value>

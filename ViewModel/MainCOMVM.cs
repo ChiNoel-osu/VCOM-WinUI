@@ -56,6 +56,7 @@ namespace VCOM_WinUI.ViewModel
 
 		Dictionary<string, string> portNumNameDict = new Dictionary<string, string>();
 		Dictionary<SerialPort, string> spMsgDict = new Dictionary<SerialPort, string>();
+		Dictionary<SerialPort, Stream> spBsDict = new Dictionary<SerialPort, Stream>();
 
 
 		[RelayCommand]
@@ -68,19 +69,14 @@ namespace VCOM_WinUI.ViewModel
 				Dictionary<string, string> oldPortNumNameDict = new Dictionary<string, string>(portNumNameDict);
 				portNumNameDict.Clear();
 				using ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption like '%(COM%'");
-				//TODO: NEED REWORK!!!!!
-				string[] portNums = SerialPort.GetPortNames();
+				string[] portNums = SerialPort.GetPortNames();  //SerialPort.GetPortNames() is broken with some device. Like some detached device might still show up.
 				string[] portNames = searcher.Get().Cast<ManagementBaseObject>().ToList().Select(obj => obj["Caption"].ToString()).ToArray();
-				if(portNums.Length!=portNames.Length)
-				{	//SerialPort.GetPortNames() is broken.
-
-				}
 				List<string> dontAdd = new List<string>();
 				List<string> removeThis = new List<string>();
 				foreach (string portNum in portNums)    //Create dictionary based on port number and its name.
-					portNumNameDict.Add(portNum, portNames.Where(name => name.Contains(portNum)).FirstOrDefault("Unknown Device."));
+					portNumNameDict.Add(portNum, portNames.Where(name => name.Contains(portNum)).FirstOrDefault("Unknown Device"));
 				foreach (KeyValuePair<string, string> old in oldPortNumNameDict)
-					if (portNums.Contains(old.Key) && portNames.Contains(old.Value))    //Add existing port to the "Don't Add" list. (Their Num and Name are the same)
+					if (portNums.Contains(old.Key) && (portNames.Contains(old.Value) || old.Value == "Unknown Device"))    //Add existing port to the "Don't Add" list. (Their Num and Name are the same)
 						dontAdd.Add(old.Key);
 					else    //Add not existing port to the "Remove" list. (Or a port's name has changed, which is unlikely to happen unless there's something I fucked up.)
 						removeThis.Add(old.Key);
@@ -124,11 +120,42 @@ namespace VCOM_WinUI.ViewModel
 					{   //Open the port.
 						UnableToOpenPort = false;
 						serialPort.Open();
+						spBsDict.TryAdd(serialPort, serialPort.BaseStream);
 						Task.Run(() => SerialPortRecv(serialPort));
 					}
-					catch (Exception)
-					{   //Failed to open the port.
-						UnableToOpenPort = true;
+					catch (Exception ex)	//TODO: Testing
+					{   //Failed to open the port. Try disposing old resources.
+						if (ex.HResult == -2147024726)
+						{   //The requested resource is in use.
+
+						}
+						else if (ex.HResult == -2147024891 || ex.HResult == -2147024894)
+						{   //Access to the path is denied.||Could not find file.
+
+						}
+						try
+						{
+							if (spBsDict.Count > 0) spBsDict.First(kvp => kvp.Key == serialPort).Value.Dispose();
+							string oldMsg = spMsgDict[serialPort];
+							serialPort.Dispose();
+							activeSPs.Remove(serialPort);
+							spMsgDict.Remove(serialPort);
+							spBsDict.Remove(serialPort);
+							serialPort = NewSP(portName, 115200, 8, StopBits.One, Parity.None);
+							activeSPs.Add(serialPort);
+							spMsgDict.Add(serialPort, oldMsg);
+							serialPort.Open();
+							spBsDict.TryAdd(serialPort, serialPort.BaseStream);
+							Task.Run(() => SerialPortRecv(serialPort));
+						}
+						catch (Exception iex)
+						{
+							if (iex.HResult == -2147024726)
+							{   //The requested resource is in use.
+
+							}
+							UnableToOpenPort = true;
+						}
 					}
 				}
 				else
@@ -275,7 +302,9 @@ namespace VCOM_WinUI.ViewModel
 					sp.Read(rBuffer, 0, 1);
 				}
 				catch (Exception)
-				{
+				{   //User closed the port or the port unexpected disconnected.
+					sp.Close();
+					dispatcher.TryEnqueue(() => COMList.First(listDevice => listDevice.COMNumStr == sp.PortName).IsOpen = false);
 					break;
 				}
 				charBuffer = Convert.ToChar(rBuffer[0]);

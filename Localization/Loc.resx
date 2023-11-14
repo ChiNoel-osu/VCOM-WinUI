@@ -158,7 +158,7 @@
     <value>Unable to open serial port!</value>
   </data>
   <data name="SPOpenFailMsg" xml:space="preserve">
-    <value>Make sure it's not in use.</value>
+    <value>Make sure it actually exists and is not in use.</value>
   </data>
   <data name="SelectMode" xml:space="preserve">
     <value>Select Mode | Update paused</value>
